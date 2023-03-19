@@ -1,5 +1,5 @@
 import yaml
-from datalakes import s3, gcs, abs
+from .datalakes import s3, gcs, abs
 
 _data_sources = {
     's3': s3, # AWS S3
