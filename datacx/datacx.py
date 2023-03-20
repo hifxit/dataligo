@@ -1,12 +1,14 @@
 import yaml
 from .datalakes import s3, gcs, abs
-from .datawarehouses import BigQuery
+from .datawarehouses import BigQuery, SnowFlake
 
 _data_sources = {
     's3': s3, # AWS S3
     'gcs': gcs, # Google Cloud Storage
     'abs': abs, # Azure Blob Storage
-    'bigquery': BigQuery #Google BigQuery
+    'bigquery': BigQuery, # Google BigQuery
+    'snowflake': SnowFlake, # SnowFlake
+
 }
 
 _data_source_group = {
