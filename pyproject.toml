@@ -21,6 +21,7 @@ dependencies = [
     "azure-storage-blob >= 12.15.0",
     "pandas >= 1.0.0",
     "PyYAML",
+    "connectorx",
     'tomli; python_version < "3.11"',
 ]
 requires-python = ">=3.7"

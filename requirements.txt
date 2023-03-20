@@ -25,6 +25,8 @@ cffi==1.15.1
     # via cryptography
 charset-normalizer==3.1.0
     # via requests
+connectorx==0.3.1
+    # via datacx (pyproject.toml)
 cryptography==39.0.2
     # via azure-storage-blob
 google-api-core==2.11.0
