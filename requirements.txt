@@ -7,6 +7,10 @@
 --extra-index-url https://pypi.ngc.nvidia.com
 --trusted-host pypi.ngc.nvidia.com
 
+asn1crypto==1.5.1
+    # via
+    #   oscrypto
+    #   snowflake-connector-python
 azure-core==1.26.3
     # via azure-storage-blob
 azure-storage-blob==12.15.0
@@ -20,15 +24,26 @@ botocore==1.29.94
 cachetools==5.3.0
     # via google-auth
 certifi==2022.12.7
-    # via requests
+    # via
+    #   requests
+    #   snowflake-connector-python
 cffi==1.15.1
-    # via cryptography
-charset-normalizer==3.1.0
-    # via requests
+    # via
+    #   cryptography
+    #   snowflake-connector-python
+charset-normalizer==2.1.1
+    # via
+    #   requests
+    #   snowflake-connector-python
 connectorx==0.3.1
     # via datacx (pyproject.toml)
 cryptography==39.0.2
-    # via azure-storage-blob
+    # via
+    #   azure-storage-blob
+    #   pyopenssl
+    #   snowflake-connector-python
+filelock==3.10.0
+    # via snowflake-connector-python
 google-api-core==2.11.0
     # via
     #   google-cloud-core
@@ -49,7 +64,11 @@ google-resumable-media==2.4.1
 googleapis-common-protos==1.58.0
     # via google-api-core
 idna==3.4
-    # via requests
+    # via
+    #   requests
+    #   snowflake-connector-python
+importlib-metadata==6.1.0
+    # via snowflake-connector-python
 isodate==0.6.1
     # via azure-storage-blob
 jmespath==1.0.1
@@ -58,6 +77,10 @@ jmespath==1.0.1
     #   botocore
 numpy==1.21.6
     # via pandas
+oscrypto==1.3.0
+    # via snowflake-connector-python
+packaging==23.0
+    # via snowflake-connector-python
 pandas==1.3.5
     # via datacx (pyproject.toml)
 protobuf==4.22.1
@@ -72,12 +95,20 @@ pyasn1-modules==0.2.8
     # via google-auth
 pycparser==2.21
     # via cffi
+pycryptodomex==3.17
+    # via snowflake-connector-python
+pyjwt==2.6.0
+    # via snowflake-connector-python
+pyopenssl==23.0.0
+    # via snowflake-connector-python
 python-dateutil==2.8.2
     # via
     #   botocore
     #   pandas
 pytz==2022.7.1
-    # via pandas
+    # via
+    #   pandas
+    #   snowflake-connector-python
 pyyaml==6.0
     # via datacx (pyproject.toml)
 requests==2.28.2
@@ -85,6 +116,7 @@ requests==2.28.2
     #   azure-core
     #   google-api-core
     #   google-cloud-storage
+    #   snowflake-connector-python
 rsa==4.9
     # via google-auth
 s3transfer==0.6.0
@@ -95,13 +127,20 @@ six==1.16.0
     #   google-auth
     #   isodate
     #   python-dateutil
+snowflake-connector-python==3.0.1
+    # via datacx (pyproject.toml)
 tomli==2.0.1 ; python_version < "3.11"
     # via datacx (pyproject.toml)
 typing-extensions==4.5.0
     # via
     #   azure-core
     #   azure-storage-blob
+    #   importlib-metadata
+    #   snowflake-connector-python
 urllib3==1.26.15
     # via
     #   botocore
     #   requests
+    #   snowflake-connector-python
+zipp==3.15.0
+    # via importlib-metadata
