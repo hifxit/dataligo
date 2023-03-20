@@ -1,15 +1,17 @@
 import yaml
 from .datalakes import s3, gcs, abs
+from .datawarehouses import BigQuery
 
 _data_sources = {
     's3': s3, # AWS S3
     'gcs': gcs, # Google Cloud Storage
-    'abs': abs, # Azure Blob Storage 
+    'abs': abs, # Azure Blob Storage
+    'bigquery': BigQuery #Google BigQuery
 }
 
 _data_source_group = {
-    'datalake': ['s3','gcs','abs'],
-    'datawarehouse': ['snowflake','redshift','bigquery','synapse'],
+    'datalakes': ['s3','gcs','abs'],
+    'datawarehouses': ['snowflake','redshift','bigquery','synapse'],
     'sql': ['postgresql','sqlserver','mysql','mariadb','sqlite'],
     'nosql': ['mongodb','elasticsearch','dynamodb']
 }
@@ -26,7 +28,7 @@ class datacx():
             self._config = yaml.safe_load(config_file)
 
     def get_supported_data_sources_list(self) -> None:
-        print(_data_sources.keys().tolist())
+        print(list(_data_sources.keys()))
 
     def connect(self,data_source) -> s3:
         ds_group = self._config_mapper(data_source)
