@@ -34,7 +34,7 @@ class s3():
             aws_secret_access_key=config['AWS_SECRET_ACCESS_KEY'],
         )
 
-    def read_as_pandas_df(self,s3_path=None,extension='.csv') -> pd.DataFrame:
+    def read_as_dataframe(self,s3_path=None,extension='.csv', return_type='pandas'):
         if Path(s3_path).suffix:
             extension = Path(s3_path).suffix
         reader = _readers[extension]
@@ -54,7 +54,7 @@ class gcs():
     def __init__(self,config):
         self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['PRIVATE_KEY_PATH'])
 
-    def read_as_pandas_df(self,gcs_path,extension='.csv') -> pd.DataFrame:
+    def read_as_dataframe(self,gcs_path,extension='.csv', return_type='pandas'):
         if Path(gcs_path).suffix:
             extension = Path(gcs_path).suffix
         reader = _readers[extension]
@@ -73,7 +73,7 @@ class abs():
         self._abs = BlobServiceClient(account_url=f"https://{config['ACCOUNT_NAME']}.blob.core.windows.net",
                                         credential=config['ACCOUNT_KEY'])
         
-    def read_as_pandas_df(self,container_name,blob_name,extension='.csv') -> pd.DataFrame:
+    def read_as_dataframe(self,container_name,blob_name,extension='.csv', return_type='pandas'):
         if Path(blob_name).suffix:
             extension = Path(blob_name).suffix
         reader = _readers[extension]
