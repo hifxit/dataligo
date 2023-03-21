@@ -14,7 +14,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["connectors", "data reader", "dataconnector"]
+keywords = ["connectors", "datalake reader","datawarehouse reader", "dataconnector"]
 dependencies = [
     "boto3 >= 1.26.93",
     "google-cloud-storage >= 2.7.0",
