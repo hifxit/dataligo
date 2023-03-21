@@ -6,7 +6,6 @@ class SnowFlake():
         self._config = config
         
     def read_as_dataframe(self,query,database,schema,protocol='https',return_type='pandas'):
-        print(self._config)
         sf_conn = connector.connect(
             host = self._config['HOST'],
             user = self._config['USERNAME'],
@@ -16,7 +15,6 @@ class SnowFlake():
             schema=schema,
             protocol=protocol
           )
-        print(query)
         cur = sf_conn.cursor()
         cur.execute(query)
         data = cur.fetch_pandas_all()
