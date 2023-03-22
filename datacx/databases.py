@@ -18,7 +18,7 @@ class Postgres():
 
 class MySQL():
     def __init__(self,config):
-        self._mysql_conn_str = f"postgresql://{config['USERNAME']}:{config['PASSWORD']}@{config['HOST']}:{config['PORT']}"
+        self._mysql_conn_str = f"mysql://{config['USERNAME']}:{config['PASSWORD']}@{config['HOST']}:{config['PORT']}"
         if 'DATABASE' in config:
             if config['DATABASE']:
                 self._dbname_in_config = True
