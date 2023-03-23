@@ -1,7 +1,7 @@
 import yaml
 from .datalakes import s3, gcs, abs
 from .datawarehouses import BigQuery, SnowFlake, Redshift
-from .databases import Postgres, MySQL
+from .databases import Postgres, MySQL, Oracle
 from .nosql import ElasticSearch, MongoDB
 
 _data_sources = {
@@ -13,6 +13,7 @@ _data_sources = {
     'redshift': Redshift, # AWS Redshift
     'postgresql': Postgres, # PostgreSQL
     'mysql': MySQL, # MySQL
+    'oracle': Oracle,
     'elasticsearch': ElasticSearch, # ElasticSearch
     'mongodb': MongoDB, # MongoDB
 
@@ -21,7 +22,7 @@ _data_sources = {
 _data_source_group = {
     'datalakes': ['s3','gcs','abs'],
     'datawarehouses': ['snowflake','redshift','bigquery','synapse'],
-    'sql': ['postgresql','sqlserver','mysql','mariadb','sqlite'],
+    'sql': ['postgresql','sqlserver','mysql','oracle','mariadb','sqlite'],
     'nosql': ['mongodb','elasticsearch','dynamodb']
 }
 
