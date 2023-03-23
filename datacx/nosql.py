@@ -1,4 +1,5 @@
 from elasticsearch import Elasticsearch
+from pymongo import MongoClient
 import pandas as pd
 
 class ElasticSearch():
@@ -16,7 +17,15 @@ class ElasticSearch():
         return pd.DataFrame(self.read_as_dict(query,index))
 
 class MongoDB():
-    pass
+    def __init__(self, config) -> None:
+        self._mdb = MongoClient(config['CONN_STRING'])
+
+    def read_as_dataframe(self,database,collection,filter_query: dict=None):
+        if filter_query is None:
+            return pd.DataFrame(list(self._mdb[database][collection].find()))
+        else:
+            return pd.DataFrame(list(self._mdb[database][collection].find(filter_query)))
+
 
 class DynamoDB():
     pass

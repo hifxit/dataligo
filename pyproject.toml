@@ -24,6 +24,7 @@ dependencies = [
     "connectorx",
     "snowflake-connector-python",
     "elasticsearch",
+    "pymongo",
     'tomli; python_version < "3.11"',
 ]
 requires-python = ">=3.7"

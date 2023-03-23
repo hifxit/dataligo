@@ -2,7 +2,7 @@ import yaml
 from .datalakes import s3, gcs, abs
 from .datawarehouses import BigQuery, SnowFlake, Redshift
 from .databases import Postgres, MySQL
-from .nosql import ElasticSearch
+from .nosql import ElasticSearch, MongoDB
 
 _data_sources = {
     's3': s3, # AWS S3
@@ -14,6 +14,7 @@ _data_sources = {
     'postgresql': Postgres, # PostgreSQL
     'mysql': MySQL, # MySQL
     'elasticsearch': ElasticSearch, # ElasticSearch
+    'mongodb': MongoDB, # MongoDB
 
 }
 
