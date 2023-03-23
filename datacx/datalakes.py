@@ -48,6 +48,15 @@ class s3():
             stream = BytesIO(obj.get()['Body'].read())
             df = _bytes_to_df(stream,extension,reader)
             return df
+        
+    def write_dataframe(self,df,bucket,filename,index=False,sep=',') -> None:
+        csv_buf = BytesIO()
+        df.to_csv(csv_buf, index=index, sep=sep)
+        csv_buf.seek(0)
+        s3.Bucket(bucket).put_object(
+            Key=filename, Body=csv_buf.getvalue()
+        )
+        print("Dataframe saved to the s3 path:", f"s3://{bucket}/{filename}")
 
 
 class gcs():
