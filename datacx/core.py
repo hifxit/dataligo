@@ -3,6 +3,7 @@ from .datalakes import s3, gcs, abs
 from .datawarehouses import BigQuery, SnowFlake, Redshift
 from .databases import Postgres, MySQL, Oracle
 from .nosql import ElasticSearch, MongoDB
+from .exceptions import ConfigMissingException
 
 _data_sources = {
     's3': s3, # AWS S3
@@ -41,10 +42,13 @@ class datacx():
         print(list(_data_sources.keys()))
 
     def connect(self,data_source):
-        ds_group = self._config_mapper(data_source)
-        ds_config = self._config[ds_group][data_source]
-        return _data_sources[data_source](ds_config)
-    
+        if self.config_path:
+            ds_group = self._config_mapper(data_source)
+            ds_config = self._config[ds_group][data_source]
+            return _data_sources[data_source](ds_config)
+        else:
+            raise ConfigMissingException("Config file missing. Add the config file path using set_config method.")
+        
     def _config_mapper(self,data_source) -> str:
         return [key for key, value in _data_source_group.items() if data_source in value][0]
 
