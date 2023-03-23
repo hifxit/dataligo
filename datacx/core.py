@@ -13,7 +13,7 @@ _data_sources = {
     'redshift': Redshift, # AWS Redshift
     'postgresql': Postgres, # PostgreSQL
     'mysql': MySQL, # MySQL
-    'oracle': Oracle,
+    'oracle': Oracle, # Oracle
     'elasticsearch': ElasticSearch, # ElasticSearch
     'mongodb': MongoDB, # MongoDB
 
@@ -40,7 +40,7 @@ class datacx():
     def get_supported_data_sources_list(self) -> None:
         print(list(_data_sources.keys()))
 
-    def connect(self,data_source) -> s3:
+    def connect(self,data_source):
         ds_group = self._config_mapper(data_source)
         ds_config = self._config[ds_group][data_source]
         return _data_sources[data_source](ds_config)
