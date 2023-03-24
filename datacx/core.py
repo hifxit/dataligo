@@ -1,7 +1,7 @@
 import yaml
 from .datalakes import s3, gcs, abs
 from .datawarehouses import BigQuery, SnowFlake, Redshift
-from .databases import Postgres, MySQL, Oracle
+from .databases import Postgres, MySQL, Oracle, MariaDB, MsSQL
 from .nosql import ElasticSearch, MongoDB
 from .exceptions import ConfigMissingException
 
@@ -15,6 +15,8 @@ _data_sources = {
     'postgresql': Postgres, # PostgreSQL
     'mysql': MySQL, # MySQL
     'oracle': Oracle, # Oracle
+    'mssql': MsSQL, # MsSQL
+    'mariadb': MariaDB, # MariaDB
     'elasticsearch': ElasticSearch, # ElasticSearch
     'mongodb': MongoDB, # MongoDB
 

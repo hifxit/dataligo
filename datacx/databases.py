@@ -31,6 +31,10 @@ class Oracle(DBCX):
     def __init__(self,config):
         super().__init__(config,'oracle')
 
+class MsSQL(DBCX):
+    def __init__(self,config):
+        super().__init__(config,'mssql')
+
 class MariaDB():
     def __init__(self,config):
         self._mdb_conn = mariadb.connect(
