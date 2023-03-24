@@ -26,7 +26,7 @@ _data_sources = {
 _data_source_group = {
     'datalakes': ['s3','gcs','abs'],
     'datawarehouses': ['snowflake','redshift','bigquery','synapse'],
-    'sql': ['postgresql','sqlserver','mysql','oracle','mariadb','sqlite'],
+    'sql': ['postgresql','mssql','mysql','oracle','mariadb','sqlite'],
     'nosql': ['mongodb','elasticsearch','dynamodb']
 }
 
