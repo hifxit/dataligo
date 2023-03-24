@@ -1,5 +1,7 @@
 import connectorx as cx
-from exceptions import ParamsMissingException
+import pandas as pd
+import mariadb
+from .exceptions import ParamsMissingException
 
 class DBCX():
     def __init__(self,config,db_type):
@@ -28,3 +30,22 @@ class MySQL(DBCX):
 class Oracle(DBCX):
     def __init__(self,config):
         super().__init__(config,'oracle')
+
+class MariaDB():
+    def __init__(self,config):
+        self._mdb_conn = mariadb.connect(
+            user=config['USERNAME'],
+            password=config['PASSWORD'],
+            host=config['HOST'],
+            port=config['PORT'],
+            database=config['DATABASE']
+        )
+
+    def read_as_dataframe(self,query,return_type='pandas'):
+        cur = self._mdb_conn.cursor()
+        cur.execute(query)
+        records = [row for row in cur]
+        return pd.DataFrame(records)
+    
+    def close_connection(self):
+        self._mdb_conn.close()
