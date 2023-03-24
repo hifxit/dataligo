@@ -35,6 +35,17 @@ class MsSQL(DBCX):
     def __init__(self,config):
         super().__init__(config,'mssql')
 
+class Sqlite():
+    def __init__(self,config):
+        self._sqlite_conn = 'sqlite://' + config['DB_PATH']
+
+    def read_as_dataframe(self,query, db_path=None,return_type='pandas'):
+        if db_path:
+            return cx.read_sql('sqlite://' + db_path, query, return_type=return_type)
+        else:
+            return cx.read_sql(self._sqlite_conn, query, return_type=return_type)
+
+
 class MariaDB():
     def __init__(self,config):
         self._mdb_conn = mariadb.connect(
