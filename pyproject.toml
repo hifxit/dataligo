@@ -26,6 +26,11 @@ dependencies = [
     "elasticsearch",
     "pymongo",
     "mariadb",
+    "pyarrow",
+    "fastparquet",
+    "openpyxl",
+    "xlrd",
+    "xlwt",
     'tomli; python_version < "3.11"',
 ]
 requires-python = ">=3.7"
