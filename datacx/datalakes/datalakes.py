@@ -4,27 +4,11 @@ from azure.storage.blob import BlobServiceClient
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
+from .utils import _s3_writer, _multi_file_load, _bytes_to_df
+from ..exceptions import ExtensionNotSupportException
 
-_readers = {'.csv': pd.read_csv,'.parquet': pd.read_parquet}
-
-def _bytes_to_df(body,extension,reader):
-    if extension=='.csv':
-        df = reader(body, encoding='utf8')
-    else:
-        df = reader(body)
-    return df
-
-def _multi_file_load(s3,bucket,key,reader,extension):
-    bucket = s3.Bucket(bucket)
-    pfx_objs = bucket.objects.filter(Prefix=key[:-1])
-    pfx_dfs = []
-    for obj in pfx_objs:
-        if obj.key.endswith('/'):
-            continue
-        body = BytesIO(obj.get()['Body'].read())
-        df = _bytes_to_df(body,extension,reader)
-        pfx_dfs.append(df)
-    return pfx_dfs
+_readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
+            'xls': pd.read_excel, 'ods': pd.read_excel, 'json': pd.read_json}
 
 class s3():
     def __init__(self,config):
@@ -34,9 +18,12 @@ class s3():
             aws_secret_access_key=config['AWS_SECRET_ACCESS_KEY'],
         )
 
-    def read_as_dataframe(self,s3_path=None,extension='.csv', return_type='pandas'):
-        if Path(s3_path).suffix:
-            extension = Path(s3_path).suffix
+    def read_as_dataframe(self,s3_path=None,extension='csv', return_type='pandas'):
+        suffix = Path(s3_path).suffix
+        if suffix:
+            extension = suffix[1:]
+        if extension not in _readers:
+            raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
         reader = _readers[extension]
         bucket, key =  s3_path.split('/',3)[2:]
         if key.endswith('*') or key.endswith('/'):
@@ -49,13 +36,8 @@ class s3():
             df = _bytes_to_df(stream,extension,reader)
             return df
         
-    def write_dataframe(self,df,bucket,filename,index=False,sep=',') -> None:
-        csv_buf = BytesIO()
-        df.to_csv(csv_buf, index=index, sep=sep)
-        csv_buf.seek(0)
-        s3.Bucket(bucket).put_object(
-            Key=filename, Body=csv_buf.getvalue()
-        )
+    def write_dataframe(self,df,bucket,filename,extension='csv',index=False,sep=',') -> None:
+        _s3_writer(self._s3, df, bucket, filename, extension, index,sep)
         print("Dataframe saved to the s3 path:", f"s3://{bucket}/{filename}")
 
 

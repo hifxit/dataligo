@@ -1,5 +1,5 @@
 import yaml
-from .datalakes import s3, gcs, abs
+from .datalakes.datalakes import s3, gcs, abs
 from .datawarehouses import BigQuery, SnowFlake, Redshift
 from .databases import Postgres, MySQL, Oracle, MariaDB, MsSQL, Sqlite
 from .nosql import ElasticSearch, MongoDB
@@ -15,7 +15,7 @@ _data_sources = {
     'postgresql': Postgres, # PostgreSQL
     'mysql': MySQL, # MySQL
     'oracle': Oracle, # Oracle
-    'mssql': MsSQL, # MsSQL
+    'mssql': MsSQL, # MsSQL, SQLServer
     'mariadb': MariaDB, # MariaDB
     'sqlite': Sqlite, # Sqlite
     'elasticsearch': ElasticSearch, # ElasticSearch
