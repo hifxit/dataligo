@@ -45,9 +45,12 @@ class gcs():
     def __init__(self,config):
         self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
 
-    def read_as_dataframe(self,gcs_path,extension='.csv', return_type='pandas'):
-        if Path(gcs_path).suffix:
-            extension = Path(gcs_path).suffix
+    def read_as_dataframe(self,gcs_path,extension='csv', return_type='pandas'):
+        suffix = Path(gcs_path).suffix
+        if suffix:
+            extension = suffix[1:]
+        if extension not in _readers:
+            raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
         reader = _readers[extension]
         bucket, file_path = gcs_path.split('/',3)[2:]
         bucket = self._gcs.get_bucket(bucket)
