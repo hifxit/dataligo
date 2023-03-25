@@ -1,0 +1,68 @@
+datalakes:
+  s3:
+    AWS_ACCESS_KEY_ID: ""
+    AWS_SECRET_ACCESS_KEY: ""
+
+  gcs:
+    GOOGLE_APPLICATION_CREDENTIALS_PATH: ''
+
+  abs:
+    ACCOUNT_NAME: ''
+    ACCOUNT_KEY: ''
+
+datawarehouses:
+  snowflake:
+    ACCOUNT_NAME: ""
+    USERNAME: ""
+    PASSWORD: ""
+    HOST: ""
+    PORT: ""
+    DATABASE: ""
+    SCHEMA: ""
+
+  bigquery:
+    GOOGLE_APPLICATION_CREDENTIALS_PATH: ''
+
+  redshift:
+    USERNAME: ''
+    PASSWORD: ''
+    HOST: ''
+    PORT: ''  
+    DATABASE: '' 
+
+databases:
+  postgres:
+    USERNAME: ''
+    PASSWORD: ''
+    HOST: ''
+    PORT: ''
+    DATABASE: ''
+
+  mysql:
+    USERNAME: ''
+    PASSWORD: ''
+    HOST: ''
+    PORT: ''   
+    DATABASE: '' 
+
+  mssql:
+    USERNAME: ''
+    PASSWORD: ''
+    HOST: ''
+    PORT: ''   
+    DATABASE: '' 
+
+  oracle:
+    USERNAME: ''
+    PASSWORD: ''
+    HOST: ''
+    PORT: ''   
+    DATABASE: ''  
+
+nosql:
+  elasticsearch:
+    HOST: ""
+    PORT: ""
+
+  mongodb:
+    CONN_STRING: ""
