@@ -61,7 +61,7 @@ class s3():
 
 class gcs():
     def __init__(self,config):
-        self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['PRIVATE_KEY_PATH'])
+        self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
 
     def read_as_dataframe(self,gcs_path,extension='.csv', return_type='pandas'):
         if Path(gcs_path).suffix:
