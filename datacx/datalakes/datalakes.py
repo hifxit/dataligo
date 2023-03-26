@@ -4,7 +4,7 @@ from azure.storage.blob import BlobServiceClient
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
-from .utils import _s3_writer, _multi_file_load, _bytes_to_df
+from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer
 from ..exceptions import ExtensionNotSupportException
 
 _readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
@@ -60,6 +60,9 @@ class gcs():
         df = _bytes_to_df(stream,extension,reader)
         return df
 
+    def write_dataframe(self, df, bucket, filename, extension='csv',index=False, sep=','):
+        _gcs_writer(self._gcs,df,bucket=bucket,filename=filename,extension=extension,index=index,sep=sep)
+        print("Dataframe saved to the gcs path:", f"gs://{bucket}/{filename}")
 
 
 class abs():

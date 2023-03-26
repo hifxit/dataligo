@@ -1,5 +1,6 @@
 from io import BytesIO
 from pathlib import Path
+import pandas as pd
 from ..exceptions import ExtensionNotSupportException
 
 def _bytes_to_df(body,extension,reader):
@@ -57,5 +58,24 @@ def _s3_writer(s3, df, bucket, filename, extension, index=False, sep=','):
         s3.Bucket(bucket).put_object(
             Key=filename, Body=buf.getvalue()
         )
+    else:
+        raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
+    
+def _gcs_writer(gcs, df, bucket, filename, extension, index=False, sep=','):
+    suffix = Path(filename).suffix
+    if suffix:
+        extension = suffix[1:]
+    bucket = gcs.get_bucket(bucket)
+    extension = extension.lower()
+    if extension=='csv':
+        bucket.blob(filename).upload_from_string(df.to_csv(index=index, sep=sep), 'text/csv')
+    elif extension=='parquet':
+        bucket.blob(filename).upload_from_string(df.to_parquet(index=index), 'text/parquet')
+    elif extension=='json':
+        bucket.blob(filename).upload_from_string(df.to_json(), 'text/json')
+    # elif extension=='feather':
+    #     bucket.blob(filename).upload_from_string(df.to_feather(), 'text/feather')
+    # elif extension in ['xlsx','xls']:
+    #     bucket.blob(filename).upload_from_string(df.to_excel(), 'text/xlsx')
     else:
         raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
