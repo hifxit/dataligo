@@ -30,36 +30,18 @@ def _s3_writer(s3, df, bucket, filename, extension, index=False, sep=','):
     extension = extension.lower()
     if extension=='csv':
         df.to_csv(buf, index=index, sep=sep)
-        buf.seek(0)
-        s3.Bucket(bucket).put_object(
-            Key=filename, Body=buf.getvalue()
-        )
     elif extension=='parquet':
         df.to_parquet(buf, index=index)
-        buf.seek(0)
-        s3.Bucket(bucket).put_object(
-            Key=filename, Body=buf.getvalue()
-        )
     elif extension=='json':
         df.to_json(buf)
-        buf.seek(0)
-        s3.Bucket(bucket).put_object(
-            Key=filename, Body=buf.getvalue()
-        )
     elif extension=='feather':
         df.to_feather(buf)
-        buf.seek(0)
-        s3.Bucket(bucket).put_object(
-            Key=filename, Body=buf.getvalue()
-        )
     elif extension in ['xlsx','xls']:
         df.to_parquet(buf, index=index)
-        buf.seek(0)
-        s3.Bucket(bucket).put_object(
-            Key=filename, Body=buf.getvalue()
-        )
     else:
         raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
+    buf.seek(0)
+    s3.Bucket(bucket).put_object(Key=filename, Body=buf.getvalue())
     
 def _gcs_writer(gcs, df, bucket, filename, extension, index=False, sep=','):
     suffix = Path(filename).suffix
