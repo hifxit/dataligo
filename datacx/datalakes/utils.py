@@ -79,3 +79,25 @@ def _gcs_writer(gcs, df, bucket, filename, extension, index=False, sep=','):
     #     bucket.blob(filename).upload_from_string(df.to_excel(), 'text/xlsx')
     else:
         raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
+
+def _azure_blob_writer(abs, df, container_name,blob_name, extension, overwrite=True, index=False, sep=','):
+    suffix = Path(blob_name).suffix
+    if suffix:
+        extension = suffix[1:]
+    container_client = abs.get_container_client(container_name)
+    blob_client = container_client.get_blob_client(blob_name)
+    buf = BytesIO()
+    if extension=='csv':
+        df.to_csv(buf,encoding='utf-8',index=index,sep=sep)
+    elif extension=='json':
+        df.to_json(buf)
+    elif extension=='parquet':
+        df.to_parquet(buf)
+    elif extension=='feather':
+        df.to_feather(buf)
+    elif extension in ['xlsx','xls']:
+        df.to_excel(buf)
+    else:
+        raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
+    buf.seek(0)
+    blob_client.upload_blob(buf.getvalue(), overwrite=overwrite)

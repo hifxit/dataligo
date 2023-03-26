@@ -4,7 +4,7 @@ from azure.storage.blob import BlobServiceClient
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
-from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer
+from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer, _azure_blob_writer
 from ..exceptions import ExtensionNotSupportException
 
 _readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
@@ -96,3 +96,7 @@ class abs():
             stream = BytesIO(blob_client.download_blob().readall())
             df = _bytes_to_df(stream,extension,reader)
             return df
+        
+    def write_dataframe(self, df, container_name, filename, overwrite=True, extension='csv',index=False, sep=','):
+        _azure_blob_writer(self._abs, df, container_name,filename,overwrite=overwrite,extension=extension,index=index,sep=sep)
+        print("Dataframe saved to the container", container_name, "with the blob name of", filename)
