@@ -70,7 +70,7 @@ class abs():
         self._abs = BlobServiceClient(account_url=f"https://{config['ACCOUNT_NAME']}.blob.core.windows.net",
                                         credential=config['ACCOUNT_KEY'])
         
-    def read_as_dataframe(self,container_name,blob_name,extension='.csv', return_type='pandas'):
+    def read_as_dataframe(self,container_name,blob_name,extension='csv', return_type='pandas'):
         suffix = Path(blob_name).suffix
         if suffix:
             extension = suffix[1:]
@@ -78,7 +78,21 @@ class abs():
             raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
         reader = _readers[extension]
         container_client = self._abs.get_container_client(container_name)
-        blob_client = container_client.get_blob_client(blob_name)
-        stream = BytesIO(blob_client.download_blob().readall())
-        df = _bytes_to_df(stream,extension,reader)
-        return df
+        if blob_name.endswith('/') or blob_name.endswith('/*') or blob_name.endswith('*'):
+            blob_name = blob_name.strip('*')
+            blob_names = [name for name in container_client.list_blob_names()]
+            dfs = []
+            for blob in blob_names:
+                if blob.startswith(blob_name):
+                    blob_client = container_client.get_blob_client(blob)
+                    stream = BytesIO(blob_client.download_blob().readall())
+                    extension = Path(blob).suffix[1:]
+                    reader = _readers[extension]
+                    df = _bytes_to_df(stream,extension,reader)
+                    dfs.append(df)
+            return pd.concat(dfs,ignore_index=True)
+        else:
+            blob_client = container_client.get_blob_client(blob_name)
+            stream = BytesIO(blob_client.download_blob().readall())
+            df = _bytes_to_df(stream,extension,reader)
+            return df
