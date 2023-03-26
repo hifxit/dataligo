@@ -71,8 +71,11 @@ class abs():
                                         credential=config['ACCOUNT_KEY'])
         
     def read_as_dataframe(self,container_name,blob_name,extension='.csv', return_type='pandas'):
-        if Path(blob_name).suffix:
-            extension = Path(blob_name).suffix
+        suffix = Path(blob_name).suffix
+        if suffix:
+            extension = suffix[1:]
+        if extension not in _readers:
+            raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
         reader = _readers[extension]
         container_client = self._abs.get_container_client(container_name)
         blob_client = container_client.get_blob_client(blob_name)
