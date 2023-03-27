@@ -70,10 +70,26 @@ class S3():
         print("Dataframe saved to the s3 path:", f"s3://{bucket}/{filename}")
 
     def upload_file(self, file_path: str, bucket: str, key: str):
+        """
+        Takes source file path, bucket and key as arguments and upload the file to S3
+
+        Args:
+            file_path (str): source file path
+            bucket (str): destination bucket
+            key (str): destination file path
+        """
         _s3_upload_file(self._s3, file_path=file_path, bucket=bucket, key=key)
         print("File uploaded to the s3 path:", f"s3://{bucket}/{key}")
 
     def download_file(self, s3_path: str = None, bucket: str = None, key: str = None, path_to_download: str = '.'):
+        """_summary_
+
+        Args:
+            s3_path (str, optional): S3 path from where it needs to download the file. Defaults to None.
+            bucket (str, optional): S3 bucket name, if S3 path is not provided . Defaults to None.
+            key (str, optional): S3 Key name, if S3 path is not provied. Defaults to None.
+            path_to_download (str, optional): save location. Defaults to '.' (current directory).
+        """
         _s3_download_file(self._s3, s3_path=s3_path,bucket=bucket, key=key,path_to_download=path_to_download)
 
 
