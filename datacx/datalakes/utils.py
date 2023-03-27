@@ -5,7 +5,7 @@ from ..exceptions import ExtensionNotSupportException
 
 def _bytes_to_df(body,extension,reader):
     if extension=='csv':
-        df = reader(body, encoding='utf8')
+        df = reader(body, encoding='utf-8')
     else:
         df = reader(body)
     return df

@@ -52,13 +52,28 @@ class gcs():
         if extension not in _readers:
             raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
         reader = _readers[extension]
-        bucket, file_path = gcs_path.split('/',3)[2:]
+        bucket, blob_name = gcs_path.split('/',3)[2:]
         bucket = self._gcs.get_bucket(bucket)
-        blob = bucket.blob(file_path)
-        data = blob.download_as_string()
-        stream = BytesIO(data)
-        df = _bytes_to_df(stream,extension,reader)
-        return df
+        if blob_name.endswith('/') or blob_name.endswith('/*') or blob_name.endswith('*'):
+            blob_name = blob_name.strip('*')
+            blob_names = [blob.name for blob in bucket.list_blobs()]
+            dfs = []
+            for blob in blob_names:
+                if blob.startswith(blob_name):
+                    extension = Path(blob).suffix[1:]
+                    reader = _readers[extension]
+                    blob = bucket.blob(blob)
+                    data = blob.download_as_string()
+                    stream = BytesIO(data)
+                    df = _bytes_to_df(stream,extension,reader)
+                    dfs.append(df)
+            return pd.concat(dfs,ignore_index=True)
+        else:
+            blob = bucket.blob(blob_name)
+            data = blob.download_as_string()
+            stream = BytesIO(data)
+            df = _bytes_to_df(stream,extension,reader)
+            return df
 
     def write_dataframe(self, df, bucket, filename, extension='csv',index=False, sep=','):
         _gcs_writer(self._gcs,df,bucket=bucket,filename=filename,extension=extension,index=index,sep=sep)
