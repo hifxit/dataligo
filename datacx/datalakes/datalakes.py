@@ -29,7 +29,7 @@ class S3():
         Takes s3 path as arguments and return dataframe.
 
         Args:
-            s3_path (str): s3 path need to be loaded, for multiple file loading, use s3://bucket/path/filename*
+            s3_path (str): s3 path of the file need to be loaded, for multiple file loading, use s3://bucket/path/filename*
                            to load all files from folder, use s3://bucket/folder/.
             extension (str, optional): extension of the files, It take automatically from the s3_path parameter. Defaults to 'csv'.
             return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
@@ -54,15 +54,26 @@ class S3():
             df = _bytes_to_df(stream,extension,reader)
             return df
         
-    def write_dataframe(self,df,bucket,filename,extension='csv',index=False,sep=',') -> None:
+    def write_dataframe(self,df,bucket: str, filename: str, extension='csv', index=False, sep=',') -> None:
+        """
+        Takes DataFrame, bucket name, filename as arguments and write the dataframe to S3.
+
+        Args:
+            df (DataFrame): Dataframe which need to be uploaded
+            bucket (str): S3 Bucket Name
+            filename (str): file name with extension
+            extension (str, optional): extension of the files, It take automatically from the filename parameter. Defaults to 'csv'
+            index (bool, optional): pandas index parameter. Defaults to False.
+            sep (str, optional): pandas sep parameter. Defaults to ','.
+        """
         _s3_writer(self._s3, df, bucket, filename, extension, index,sep)
         print("Dataframe saved to the s3 path:", f"s3://{bucket}/{filename}")
 
-    def upload_file(self, file_path, bucket, key):
+    def upload_file(self, file_path: str, bucket: str, key: str):
         _s3_upload_file(self._s3, file_path=file_path, bucket=bucket, key=key)
         print("File uploaded to the s3 path:", f"s3://{bucket}/{key}")
 
-    def download_file(self, s3_path=None, bucket=None, key=None, path_to_download='.'):
+    def download_file(self, s3_path: str = None, bucket: str = None, key: str = None, path_to_download: str = '.'):
         _s3_download_file(self._s3, s3_path=s3_path,bucket=bucket, key=key,path_to_download=path_to_download)
 
 
@@ -80,7 +91,7 @@ class GCS():
         """Takes gcs path as argument and return dataframe.
 
         Args:
-            gcs_path (str): gcs path need to be loaded, for multiple file loading, use gs://bucket/path/filename*
+            gcs_path (str): gcs path of the file need to be loaded, for multiple file loading, use gs://bucket/path/filename*
                            to load all files from folder, use gs://bucket/folder/.
             extension (str, optional): extension of the files, It take automatically from the gcs path parameter. Defaults to 'csv'.
             return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
@@ -118,6 +129,17 @@ class GCS():
             return df
 
     def write_dataframe(self, df, bucket, filename, extension='csv',index=False, sep=','):
+        """
+        Takes DataFrame, bucket name, filename as arguments and write the dataframe to GCS.
+
+        Args:
+            df (DataFrame): Dataframe which need to be uploaded
+            bucket (str): GCS Bucket Name
+            filename (str): file name with extension
+            extension (str, optional): extension of the files, It take automatically from the filename parameter. Defaults to 'csv'
+            index (bool, optional): pandas index parameter. Defaults to False.
+            sep (str, optional): pandas sep parameter. Defaults to ','.
+        """
         _gcs_writer(self._gcs,df,bucket=bucket,filename=filename,extension=extension,index=index,sep=sep)
         print("Dataframe saved to the gcs path:", f"gs://{bucket}/{filename}")
 
@@ -171,6 +193,17 @@ class AzureBlob():
             df = _bytes_to_df(stream,extension,reader)
             return df
         
-    def write_dataframe(self, df, container_name, filename, overwrite=True, extension='csv',index=False, sep=','):
+    def write_dataframe(self, df, container_name: str, filename: str, overwrite=True, extension='csv',index=False, sep=','):
+        """Takes DataFrame, container name, filename as arguments and write the dataframe to Azure Blob Storage.
+
+        Args:
+            df (DataFrame): Dataframe which need to be uploaded
+            container_name (str): Container Name of the azure storage account
+            filename (str): file name with extension
+            overwrite (bool, optional): Overwrite the existing data. Defaults to True.
+            extension (str, optional): extension of the files, It take automatically from the filename parameter. Defaults to 'csv'
+            index (bool, optional): pandas index parameter. Defaults to False.
+            sep (str, optional): pandas sep parameter. Defaults to ','.
+        """
         _azure_blob_writer(self._abs, df, container_name,filename,overwrite=overwrite,extension=extension,index=index,sep=sep)
         print("Dataframe saved to the container", container_name, "with the blob name of", filename)
