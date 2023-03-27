@@ -4,7 +4,7 @@ from azure.storage.blob import BlobServiceClient
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
-from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer, _azure_blob_writer
+from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer, _azure_blob_writer, _s3_upload_file
 from ..exceptions import ExtensionNotSupportException
 
 _readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
@@ -39,6 +39,10 @@ class s3():
     def write_dataframe(self,df,bucket,filename,extension='csv',index=False,sep=',') -> None:
         _s3_writer(self._s3, df, bucket, filename, extension, index,sep)
         print("Dataframe saved to the s3 path:", f"s3://{bucket}/{filename}")
+
+    def upload_file(self, file_path, bucket, key):
+        _s3_upload_file(self._s3, file_path=file_path, bucket=bucket, key=key)
+        print("File uploaded to the s3 path:", f"s3://{bucket}/{key}")
 
 
 class gcs():
