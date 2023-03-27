@@ -4,6 +4,8 @@ import pandas as pd
 from ..exceptions import ExtensionNotSupportException
 from boto3.s3.transfer import TransferConfig
 import os
+import threading
+import sys
 
 multipart_config = TransferConfig(multipart_threshold=1024 * 50, 
                         max_concurrency=8,
@@ -29,29 +31,33 @@ def _multi_file_load(s3,bucket,key,reader,extension):
         pfx_dfs.append(df)
     return pfx_dfs
 
+# source: https://medium.com/analytics-vidhya/aws-s3-multipart-upload-download-using-boto3-python-sdk-2dedb0945f11
+# source: https://boto3.amazonaws.com/v1/documentation/api/latest/_modules/boto3/s3/transfer.html
 def _s3_upload_file(s3, file_path, bucket, key):
     suffix = Path(file_path).suffix
     if suffix:
         extension=suffix[1:]
     s3.Object(bucket, key).upload_file(file_path,
                             ExtraArgs={'ContentType': f'text/{extension}'},
-                            Config=multipart_config
+                            Config=multipart_config,
+                            Callback=ProgressPercentage(file_path)
                             )
-    
+    print('\n')
+
+ # source: https://medium.com/analytics-vidhya/aws-s3-multipart-upload-download-using-boto3-python-sdk-2dedb0945f11
+ # source: https://boto3.amazonaws.com/v1/documentation/api/latest/_modules/boto3/s3/transfer.html
 def _s3_download_file(s3, s3_path=None, bucket=None, key=None, path_to_download='.'):
     if s3_path:
         bucket, key =  s3_path.split('/',3)[2:]
         filename = key.split('/')[-1]
     else:
         filename = key.split('/')[-1]
-    suffix = Path(filename).suffix
-    if suffix:
-        extension=suffix[1:]
-    # file_path = os.path.dirname(__file__)
     file_path = os.path.join(path_to_download,filename)
     s3.Object(bucket, key).download_file(file_path,
-                            Config=multipart_config
+                            Config=multipart_config,
+                            Callback=ProgressPercentage(file_path)
                             )
+    print('\n')
     print("File downloaded to the path:", f"{file_path}")
 
 def _s3_writer(s3, df, bucket, filename, extension, index=False, sep=','):
@@ -115,3 +121,22 @@ def _azure_blob_writer(abs, df, container_name,blob_name, extension, overwrite=T
         raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
     buf.seek(0)
     blob_client.upload_blob(buf.getvalue(), overwrite=overwrite)
+
+class ProgressPercentage(object):
+    def __init__(self, filename):
+        self._filename = filename
+        self._size = float(os.path.getsize(filename))
+        self._seen_so_far = 0
+        self._lock = threading.Lock()
+
+    def __call__(self, bytes_amount):
+        # To simplify we'll assume this is hooked up
+        # to a single filename.
+        with self._lock:
+            self._seen_so_far += bytes_amount
+            percentage = (self._seen_so_far / self._size) * 100
+            sys.stdout.write(
+                "\r%s  %s / %s  (%.2f%%)" % (
+                    self._filename, self._seen_so_far, self._size,
+                    percentage))
+            sys.stdout.flush()
