@@ -6,6 +6,7 @@ from io import BytesIO
 from pathlib import Path
 from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer, _azure_blob_writer, _s3_upload_file, _s3_download_file
 from ..exceptions import ExtensionNotSupportException
+import os
 
 _readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
             'xls': pd.read_excel, 'ods': pd.read_excel, 'json': pd.read_json}
@@ -69,20 +70,21 @@ class S3():
         _s3_writer(self._s3, df, bucket, filename, extension, index,sep)
         print("Dataframe saved to the s3 path:", f"s3://{bucket}/{filename}")
 
-    def upload_file(self, file_path: str, bucket: str, key: str):
+    def upload_file(self, source_file_path: str, bucket: str, key: str):
         """
         Takes source file path, bucket and key as arguments and upload the file to S3
 
         Args:
-            file_path (str): source file path
+            source_file_path (str): source file path
             bucket (str): destination bucket
             key (str): destination file path
         """
-        _s3_upload_file(self._s3, file_path=file_path, bucket=bucket, key=key)
+        _s3_upload_file(self._s3, file_path=source_file_path, bucket=bucket, key=key)
         print("File uploaded to the s3 path:", f"s3://{bucket}/{key}")
 
     def download_file(self, s3_path: str = None, bucket: str = None, key: str = None, path_to_download: str = '.'):
-        """_summary_
+        """
+        Takes s3 path or (bucket and key name) as arguments and download the file
 
         Args:
             s3_path (str, optional): S3 path from where it needs to download the file. Defaults to None.
@@ -158,7 +160,40 @@ class GCS():
         """
         _gcs_writer(self._gcs,df,bucket=bucket,filename=filename,extension=extension,index=index,sep=sep)
         print("Dataframe saved to the gcs path:", f"gs://{bucket}/{filename}")
+    
+    def upload_file(self, source_file_path: str, bucket: str, blob_name: str):
+        """
+        Takes source file path, bucket and blob name as arguments and upload the file to GCS
 
+        Args:
+            source_file_path (str): Source file path
+            bucket (str): GCS Bucket Name
+            blob_name (str): Blob name (destination file path)
+        """
+        Bucket = storage.Bucket(self._gcs, bucket)
+        blob = Bucket.blob(blob_name)
+        blob.upload_from_filename(source_file_path)
+        print("File uploaded to the gcs path:", f"gs://{bucket}/{blob_name}")
+
+    def download_file(self, gcs_path: str = None, bucket: str = None, blob_name: str = None, path_to_download: str = '.'):
+        """
+        Takes gcs path or (bucket and blob name) as arguments and download the file
+
+        Args:
+            gcs_path (str, optional): GCS file path. Defaults to None.
+            bucket (str, optional): GCS bucket name, if gcs path is not provided. Defaults to None.
+            blob_name (str, optional): GCS blob name, if gcs path is not provied. Defaults to None.
+            path_to_download (str, optional): save location. Defaults to '.'.
+        """
+        if gcs_path:
+            bucket, blob_name = gcs_path.split('/',3)[2:]
+        Bucket = self._gcs.get_bucket(bucket)
+        blob = Bucket.blob(blob_name)
+        filename = blob_name.split('/')[-1]
+        file_path = os.path.join(path_to_download,filename)
+        blob.download_to_filename(file_path)
+        print("File downloaded to the path:", f"{file_path}")
+        
 
 class AzureBlob():
     def __init__(self,config):
