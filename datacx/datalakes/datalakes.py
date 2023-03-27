@@ -10,15 +10,33 @@ from ..exceptions import ExtensionNotSupportException
 _readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
             'xls': pd.read_excel, 'ods': pd.read_excel, 'json': pd.read_json}
 
-class s3():
+class S3():
     def __init__(self,config):
+        """
+        S3 class create a dcx s3 object, through which you can able to read, write, upload, download data from AWS S3
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         self._s3 = boto3.resource(
             "s3",
             aws_access_key_id=config['AWS_ACCESS_KEY_ID'],
             aws_secret_access_key=config['AWS_SECRET_ACCESS_KEY'],
         )
 
-    def read_as_dataframe(self,s3_path=None,extension='csv', return_type='pandas'):
+    def read_as_dataframe(self,s3_path: str, extension='csv', return_type='pandas'):
+        """
+        Takes s3 path as arguments and return dataframe.
+
+        Args:
+            s3_path (str): s3 path need to be loaded, for multiple file loading, use s3://bucket/path/filename*
+                           to load all files from folder, use s3://bucket/folder/.
+            extension (str, optional): extension of the files, It take automatically from the s3_path parameter. Defaults to 'csv'.
+            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
+
+        Returns:
+            DataFrame: Depends on the return_type parameter.
+        """
         suffix = Path(s3_path).suffix
         if suffix:
             extension = suffix[1:]
@@ -28,7 +46,7 @@ class s3():
         bucket, key =  s3_path.split('/',3)[2:]
         if key.endswith('*') or key.endswith('/'):
             pfx_dfs = _multi_file_load(self._s3,bucket=bucket,key=key,reader=reader,extension=extension)
-            df = pd.concat(pfx_dfs).reset_index(drop=True)
+            df = pd.concat(pfx_dfs,ignore_index=True)
             return df
         else:
             obj = self._s3.Object(bucket_name=bucket, key=key)
@@ -48,11 +66,28 @@ class s3():
         _s3_download_file(self._s3, s3_path=s3_path,bucket=bucket, key=key,path_to_download=path_to_download)
 
 
-class gcs():
+class GCS():
     def __init__(self,config):
+        """
+        GCS class create a dcx gcs object, through which you can able to read, write, upload, download data from Google Cloud Storage.
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
 
-    def read_as_dataframe(self,gcs_path,extension='csv', return_type='pandas'):
+    def read_as_dataframe(self,gcs_path: str, extension='csv', return_type='pandas'):
+        """Takes gcs path as argument and return dataframe.
+
+        Args:
+            gcs_path (str): gcs path need to be loaded, for multiple file loading, use gs://bucket/path/filename*
+                           to load all files from folder, use gs://bucket/folder/.
+            extension (str, optional): extension of the files, It take automatically from the gcs path parameter. Defaults to 'csv'.
+            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
+
+        Returns:
+            DataFrame: Depends on the return_type parameter.
+        """
         suffix = Path(gcs_path).suffix
         if suffix:
             extension = suffix[1:]
@@ -87,12 +122,29 @@ class gcs():
         print("Dataframe saved to the gcs path:", f"gs://{bucket}/{filename}")
 
 
-class abs():
+class AzureBlob():
     def __init__(self,config):
+        """
+        AzureBlob class create a dcx gcs object, through which you can able to read, write, upload, download data from Azure Blob Storage.
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         self._abs = BlobServiceClient(account_url=f"https://{config['ACCOUNT_NAME']}.blob.core.windows.net",
                                         credential=config['ACCOUNT_KEY'])
         
-    def read_as_dataframe(self,container_name,blob_name,extension='csv', return_type='pandas'):
+    def read_as_dataframe(self, container_name: str,blob_name: str, extension='csv', return_type='pandas'):
+        """Takes Azure Storage account container name and blob name and return datafarme.
+
+        Args:
+            container_name (str): Container Name of the azure storage account 
+            blob_name (str): Blob Name which wants to read
+            extension (str, optional): extension of the files, It take automatically from the blob_name parameter. Defaults to 'csv'.
+            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
+
+        Returns:
+            DataFrame: Depends on the return_type parameter.
+        """
         suffix = Path(blob_name).suffix
         if suffix:
             extension = suffix[1:]
