@@ -3,6 +3,7 @@ from pathlib import Path
 import pandas as pd
 from ..exceptions import ExtensionNotSupportException
 from boto3.s3.transfer import TransferConfig
+import os
 
 multipart_config = TransferConfig(multipart_threshold=1024 * 50, 
                         max_concurrency=8,
@@ -28,7 +29,7 @@ def _multi_file_load(s3,bucket,key,reader,extension):
         pfx_dfs.append(df)
     return pfx_dfs
 
-def _s3_upload_file(s3, file_path, bucket, key,):
+def _s3_upload_file(s3, file_path, bucket, key):
     suffix = Path(file_path).suffix
     if suffix:
         extension=suffix[1:]
@@ -36,6 +37,22 @@ def _s3_upload_file(s3, file_path, bucket, key,):
                             ExtraArgs={'ContentType': f'text/{extension}'},
                             Config=multipart_config
                             )
+    
+def _s3_download_file(s3, s3_path=None, bucket=None, key=None, path_to_download='.'):
+    if s3_path:
+        bucket, key =  s3_path.split('/',3)[2:]
+        filename = key.split('/')[-1]
+    else:
+        filename = key.split('/')[-1]
+    suffix = Path(filename).suffix
+    if suffix:
+        extension=suffix[1:]
+    # file_path = os.path.dirname(__file__)
+    file_path = os.path.join(path_to_download,filename)
+    s3.Object(bucket, key).download_file(file_path,
+                            Config=multipart_config
+                            )
+    print("File downloaded to the path:", f"{file_path}")
 
 def _s3_writer(s3, df, bucket, filename, extension, index=False, sep=','):
     buf = BytesIO()

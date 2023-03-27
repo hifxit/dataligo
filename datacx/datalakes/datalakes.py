@@ -4,7 +4,7 @@ from azure.storage.blob import BlobServiceClient
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
-from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer, _azure_blob_writer, _s3_upload_file
+from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer, _azure_blob_writer, _s3_upload_file, _s3_download_file
 from ..exceptions import ExtensionNotSupportException
 
 _readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
@@ -43,6 +43,9 @@ class s3():
     def upload_file(self, file_path, bucket, key):
         _s3_upload_file(self._s3, file_path=file_path, bucket=bucket, key=key)
         print("File uploaded to the s3 path:", f"s3://{bucket}/{key}")
+
+    def download_file(self, s3_path=None, bucket=None, key=None, path_to_download='.'):
+        _s3_download_file(self._s3, s3_path=s3_path,bucket=bucket, key=key,path_to_download=path_to_download)
 
 
 class gcs():
