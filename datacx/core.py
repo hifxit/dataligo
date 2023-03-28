@@ -1,8 +1,8 @@
 import yaml
-from .datalakes.datalakes import S3, GCS, AzureBlob
-from .datawarehouses import BigQuery, SnowFlake, Redshift
-from .databases import Postgres, MySQL, Oracle, MariaDB, MsSQL, Sqlite
-from .nosql import ElasticSearch, MongoDB
+from .datalakes.datalake import S3, GCS, AzureBlob
+from .datawarehouses.datawarehouse import BigQuery, SnowFlake, Redshift
+from .databases.database import Postgres, MySQL, Oracle, MariaDB, MsSQL, Sqlite
+from .nosql.nosql import ElasticSearch, MongoDB
 from .exceptions import ConfigMissingException
 
 _data_sources = {
