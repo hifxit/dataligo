@@ -122,6 +122,8 @@ def _azure_blob_writer(abs, df, container_name,blob_name, extension, overwrite=T
     buf.seek(0)
     blob_client.upload_blob(buf.getvalue(), overwrite=overwrite)
 
+# source: https://medium.com/analytics-vidhya/aws-s3-multipart-upload-download-using-boto3-python-sdk-2dedb0945f11
+# source: https://boto3.amazonaws.com/v1/documentation/api/latest/_modules/boto3/s3/transfer.html
 class ProgressPercentage(object):
     def __init__(self, filename):
         self._filename = filename
