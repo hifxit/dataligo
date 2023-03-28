@@ -6,7 +6,7 @@ datalakes:
   gcs:
     GOOGLE_APPLICATION_CREDENTIALS_PATH: ''
 
-  abs:
+  azureblob:
     ACCOUNT_NAME: ''
     ACCOUNT_KEY: ''
 
