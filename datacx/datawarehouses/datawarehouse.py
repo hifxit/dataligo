@@ -1,31 +1,85 @@
 import connectorx as cx
-from snowflake import connector
+from .utils import _df_to_file_writer, _snowflake_connector, _snowflake_executer
 
 class SnowFlake():
     def __init__(self, config):
+        """
+        SnowFlake class create the dcx snowflake object, through which you can able to read, write, download data from SnowFlake.
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         self._config = config
         
-    def read_as_dataframe(self,query,database,schema,protocol='https',return_type='pandas'):
-        sf_conn = connector.connect(
-            host = self._config['HOST'],
-            user = self._config['USERNAME'],
-            password=self._config['PASSWORD'],
-            account=self._config['ACCOUNT_NAME'],
-            database=database,
-            schema=schema,
-            protocol=protocol
-          )
-        cur = sf_conn.cursor()
-        cur.execute(query)
-        data = cur.fetch_pandas_all()
-        return data
+    def read_as_dataframe(self,query: str,database: str = None,schema: str = None,protocol: str ='https',return_type: str ='pandas'):
+        """
+        Takes query as arguments and return dataframe
+
+        Args:
+            query (str): select query
+            database (str, optional): database name, if None, it take it from config. Defaults to None.
+            schema (str, optional): schema name, if None, it take it from config. Defaults to None.
+            protocol (str, optional): protocol Defaults to 'https'.
+            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'. Defaults to 'pandas'.
+
+        Returns:
+            DataFrame: Depends on the return_type parameter.
+        """
+        sf_conn = _snowflake_connector(self._config, database=database, schema=schema, protocol=protocol)
+        df = _snowflake_executer(sf_conn, query, return_type=return_type)
+        sf_conn.close()
+        return df
+    
+    def download_as_file(self, query: str, filename: str, database: str = None, schema: str = None, protocol: str = 'https') -> None:
+        """
+        Takes query, filename as arguments and download the data as file
+
+        Args:
+            query (str): select query
+            filename (str): filename to save the file
+            database (str, optional): database name, if None, it take it from config. Defaults to None.
+            schema (str, optional): schema name, if None, it take it from config. Defaults to None.
+        """
+        sf_conn = _snowflake_connector(self._config, database=database, schema=schema, protocol=protocol)
+        df = _snowflake_executer(sf_conn, query, return_type='pandas')
+        _df_to_file_writer(df,filename)
+        print('File saved to the path:', filename)
 
 class BigQuery():
     def __init__(self,config):
+        """
+        BigQuery class create the dcx biqquery object, through which you can able to read, write, download data from Google's BigQuery 
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         self._bq_conn = 'bigquery://' + config['GOOGLE_APPLICATION_CREDENTIALS_PATH']
 
-    def read_as_dataframe(self,query,return_type='pandas'):
+    def read_as_dataframe(self, query: str,return_type: str ='pandas'):
+        """
+        Takes query as the arguments and return the dataframe
+
+        Args:
+            query (str): select query
+            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'. Defaults to 'pandas'.
+
+        Returns:
+            DataFrame: Depends on the return_type parameter.
+        """
         return cx.read_sql(self._bq_conn, query,return_type=return_type)
+    
+    def download_as_file(self, query: str, filename: str) -> None:
+        """
+        Takes query, filename as arguments and download the data as file
+
+        Args:
+            query (str): select query
+            filename (str): filename to save the file
+        """
+        df = cx.read_sql(self._bq_conn, query,return_type='pandas')
+        _df_to_file_writer(df,filename)
+        print('File saved to the path:', filename)
+
     
 class Redshift():
     def __init__(self,config):

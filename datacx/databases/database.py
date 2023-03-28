@@ -1,7 +1,7 @@
 import connectorx as cx
 import pandas as pd
 import mariadb
-from .exceptions import ParamsMissingException
+from ..exceptions import ParamsMissingException
 
 class DBCX():
     def __init__(self,config,db_type):
