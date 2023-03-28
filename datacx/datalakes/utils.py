@@ -75,7 +75,7 @@ def _s3_writer(s3, df, bucket, filename, extension, index=False, sep=','):
     elif extension=='feather':
         df.to_feather(buf)
     elif extension in ['xlsx','xls']:
-        df.to_parquet(buf, index=index)
+        df.to_excel(buf, index=index)
     else:
         raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
     buf.seek(0)
