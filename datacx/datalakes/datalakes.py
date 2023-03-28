@@ -189,7 +189,7 @@ class GCS():
             bucket, blob_name = gcs_path.split('/',3)[2:]
         Bucket = self._gcs.get_bucket(bucket)
         blob = Bucket.blob(blob_name)
-        filename = blob_name.split('/')[-1]
+        filename = Path(blob_name).name
         file_path = os.path.join(path_to_download,filename)
         blob.download_to_filename(file_path)
         print("File downloaded to the path:", f"{file_path}")
@@ -198,7 +198,7 @@ class GCS():
 class AzureBlob():
     def __init__(self,config):
         """
-        AzureBlob class create a dcx gcs object, through which you can able to read, write, upload, download data from Azure Blob Storage.
+        AzureBlob class create a dcx azureblob object, through which you can able to read, write, upload, download data from Azure Blob Storage.
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -258,3 +258,39 @@ class AzureBlob():
         """
         _azure_blob_writer(self._abs, df, container_name,filename,overwrite=overwrite,extension=extension,index=index,sep=sep)
         print("Dataframe saved to the container", container_name, "with the blob name of", filename)
+
+    # source: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-python
+    def upload_file(self,source_file_path: str, container_name: str, blob_name: str = None):
+        """
+        Takes source file path, container name and blob name as arguments and upload the file to Azure Blob Storage
+
+        Args:
+            source_file_path (str): source file path
+            container_name (str): container name
+            blob_name (str, optional): blob name, if not mentioned, it automatically takes source filename as blob name. Defaults to None.
+        """
+        if blob_name:
+            blob_client = self._abs.get_blob_client(container=container_name, blob=blob_name)
+        else:
+            filename = Path(source_file_path).name
+            blob_client = self._abs.get_blob_client(container=container_name, blob=filename)
+        with open(source_file_path,'rb') as data:
+            blob_client.upload_blob(data)
+        print("File uploaded to the container", container_name, "with the blob name of", blob_name)
+
+    # source: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-python
+    def download_file(self,container_name: str, blob_name: str, path_to_download='.'):
+        """
+        Takes container name and blob name as arguments and download the file
+
+        Args:
+            container_name (str): container name
+            blob_name (str): blob name
+            path_to_download (str, optional): save location. Defaults to '.'.
+        """
+        filename = Path(blob_name).name
+        download_file_path = os.path.join(path_to_download, filename)
+        container_client = self._abs.get_container_client(container= container_name)
+        with open(file=download_file_path, mode="wb") as download_file:
+            download_file.write(container_client.download_blob(blob_name).readall())
+        print('File downloaded to the path:', download_file_path)
