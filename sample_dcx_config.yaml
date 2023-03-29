@@ -30,8 +30,15 @@ datawarehouses:
     PORT: ''  
     DATABASE: '' 
 
+  starrocks:
+    USERNAME: ''
+    PASSWORD: ''
+    HOST: ''
+    PORT: ''  
+    DATABASE: ''
+
 databases:
-  postgres:
+  postgresql:
     USERNAME: ''
     PASSWORD: ''
     HOST: ''

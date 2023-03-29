@@ -1,6 +1,6 @@
 import yaml
 from .datalakes.datalake import S3, GCS, AzureBlob
-from .datawarehouses.datawarehouse import BigQuery, SnowFlake, Redshift
+from .datawarehouses.datawarehouse import BigQuery, SnowFlake, Redshift, StarRocks
 from .databases.database import Postgres, MySQL, Oracle, MariaDB, MsSQL, Sqlite
 from .nosql.nosql import ElasticSearch, MongoDB
 from .exceptions import ConfigMissingException
@@ -12,6 +12,7 @@ _data_sources = {
     'bigquery': BigQuery, # Google BigQuery
     'snowflake': SnowFlake, # SnowFlake
     'redshift': Redshift, # AWS Redshift
+    'starrocks': StarRocks, # StarRocks
     'postgresql': Postgres, # PostgreSQL
     'mysql': MySQL, # MySQL
     'oracle': Oracle, # Oracle
@@ -25,7 +26,7 @@ _data_sources = {
 
 _data_source_group = {
     'datalakes': ['s3','gcs','azureblob'],
-    'datawarehouses': ['snowflake','redshift','bigquery','synapse'],
+    'datawarehouses': ['snowflake','redshift','bigquery','starrocks','synapse'],
     'databases': ['postgresql','mssql','mysql','oracle','mariadb','sqlite'],
     'nosql': ['mongodb','elasticsearch','dynamodb']
 }

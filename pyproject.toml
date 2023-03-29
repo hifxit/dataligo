@@ -23,6 +23,7 @@ dependencies = [
     "PyYAML",
     "connectorx",
     "snowflake-connector-python",
+    "mysql-connector-python-rf",
     "elasticsearch",
     "pymongo",
     "mariadb",
