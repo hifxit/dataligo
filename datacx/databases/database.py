@@ -2,6 +2,7 @@ import connectorx as cx
 import pandas as pd
 import mariadb
 from ..exceptions import ParamsMissingException
+from ..datawarehouses.utils import _df_to_file_writer
 
 class DBCX():
     def __init__(self,config,db_type):
@@ -18,6 +19,11 @@ class DBCX():
             return cx.read_sql(f"{self._conn_str}/{database}", query,return_type=return_type)
         else:
             raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
+        
+    def download_as_file(self,query: str, filename: str, database: str = None):
+        df = self.read_as_dataframe(query=query, database=database, return_type='pandas')
+        _df_to_file_writer(df, filename=filename)
+        print('File saved to the path:', filename)
 
 class Postgres(DBCX):
     def __init__(self,config):
