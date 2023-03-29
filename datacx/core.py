@@ -31,8 +31,9 @@ _data_source_group = {
 }
 
 class datacx():
-    def __init__(self,config_path: str=None) -> None:
+    def __init__(self,config_path: str=None, name: str = None) -> None:
         self.config_path = config_path
+        self.name = name
         if config_path is not None:
             self.set_config(self.config_path)
 
