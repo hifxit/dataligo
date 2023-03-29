@@ -5,6 +5,9 @@ from ..exceptions import ParamsMissingException
 from ..datawarehouses.utils import _df_to_file_writer
 
 class DBCX():
+    """
+    DBCX is the parent class for most of the Database, which use ConnectorX to read and download the data from the database.
+    """
     def __init__(self,config,db_type):
         self._conn_str = f"{db_type}://{config['USERNAME']}:{config['PASSWORD']}@{config['HOST']}:{config['PORT']}"
         if 'DATABASE' in config:
@@ -43,9 +46,26 @@ class MsSQL(DBCX):
 
 class Sqlite():
     def __init__(self,config):
+        """
+        Sqlite class create sqlite dcx object to load data from sqlite database
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         self._sqlite_conn = 'sqlite://' + config['DB_PATH']
 
-    def read_as_dataframe(self,query, db_path=None,return_type='pandas'):
+    def read_as_dataframe(self, query: str, db_path=None,return_type='pandas'):
+        """
+        Takes query as argument and return a dataframe
+
+        Args:
+            query (str): select query
+            db_path (str, optional): sqlite db file path (eg. /home/user/Desktop/my_sqlite.db). If None, It takes that from config file. Defaults to None.
+            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'. Defaults to 'pandas'.
+
+        Returns:
+            DataFrame: Depends on the return_type parameter.
+        """
         if db_path:
             return cx.read_sql('sqlite://' + db_path, query, return_type=return_type)
         else:
