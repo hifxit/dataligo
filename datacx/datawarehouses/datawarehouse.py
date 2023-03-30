@@ -87,6 +87,12 @@ class BigQuery():
     
 class Redshift(DBCX):
     def __init__(self, config) -> None:
+        """
+        Redshift class create the dcx redshift object, through which you can able to read, write, download data from Redshift.
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         super().__init__(config,'redshift')
         
 class StarRocks():
