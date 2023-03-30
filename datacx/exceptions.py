@@ -9,3 +9,7 @@ class ConfigMissingException(Exception):
 class ExtensionNotSupportException(Exception):
     def __init__(self,message):
         self.message = message
+
+class UnSupportedDataSourceException(Exception):
+    def __init__(self,message):
+        self.message = message
