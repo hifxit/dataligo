@@ -1,4 +1,4 @@
-from .core import datacx
+from .core import DataCX
 from importlib import resources
 try:
     import tomllib
