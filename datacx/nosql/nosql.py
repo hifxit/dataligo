@@ -25,6 +25,11 @@ class MongoDB():
             return pd.DataFrame(list(self._mdb[database][collection].find()))
         else:
             return pd.DataFrame(list(self._mdb[database][collection].find(filter_query)))
+        
+    def write_dataframe(self, df, database: str, collections: str):
+        records = df.to_dict('records')
+        self._mdb[database][collections].insert_many(records)
+        print()
 
 
 class DynamoDB():
