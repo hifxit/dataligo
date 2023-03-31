@@ -1,5 +1,10 @@
-# DataCX
-Data Connectors for all the data sources
+<div align="center">
+
+<img src="docs/images/LOGO.png" alt="drawing" width="200"/>
+
+A Data Connector for all the data sources
+
+<div align="left">
 
 ## Installation
 ```bash
