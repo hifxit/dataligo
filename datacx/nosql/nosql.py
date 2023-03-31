@@ -61,14 +61,14 @@ class MongoDB():
         else:
             return pd.DataFrame(list(self._mdb[database][collection].find(filter_query)))
         
-    def write_dataframe(self, df, database: str, collections: str):
+    def write_dataframe(self, df, database: str, collection: str):
         """
         Takes DataFrame, database name, collection name as arguments and write the dataframe to MongoDB.
 
         Args:
             df (DataFrame): Dataframe which need to be inserted to mongodb
             database (str): database name
-            collections (str): collection name
+            collection (str): collection name
         """
         records = df.to_dict('records')
         self._mdb[database][collections].insert_many(records)
