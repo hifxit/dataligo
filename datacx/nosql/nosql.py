@@ -10,24 +10,11 @@ class ElasticSearch():
         Args:
             config (dict): Automatically loaded from the config file (yaml)
         """
-        self._es = ElasticSearch([config['HOST']],port=config['PORT'])
-
-    def read_as_dict(self,query: str,index: str):
-        """
-        Takes query and index as arguments and return the records as dict
-
-        Args:
-            query (str): es query
-            index (str): es index
-
-        Returns:
-            dict: Return a dict
-        """
-        response = self._es.search(
-            index = index,
-            body = query
-            )
-        return response['hits']['hits']
+        if 'API_KEY' in config:
+            if config['API_KEY']:
+                self._es = ElasticSearch([config['HOST']],api_key=config['API_KEY'])
+        else:
+            self._es = ElasticSearch([config['HOST']])
     
     def read_as_dataframe(self,query: str,index: str,return_type='pandas'):
         """
@@ -40,7 +27,11 @@ class ElasticSearch():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
-        records = [i['_source'] for i in self.read_as_dict(query,index)]
+        response = self._es.search(
+            index = index,
+            body = query
+            )
+        records = [i['_source'] for i in response['hits']['hits']]
         return pd.DataFrame(records)
 
 class MongoDB():
@@ -71,7 +62,8 @@ class MongoDB():
             return pd.DataFrame(list(self._mdb[database][collection].find(filter_query)))
         
     def write_dataframe(self, df, database: str, collections: str):
-        """_summary_
+        """
+        Takes DataFrame, database name, collection name as arguments and write the dataframe to MongoDB.
 
         Args:
             df (DataFrame): Dataframe which need to be inserted to mongodb
