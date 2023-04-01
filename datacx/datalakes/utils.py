@@ -20,8 +20,9 @@ def _bytes_to_df(body,extension,reader):
     return df
 
 def _multi_file_load(s3,bucket,key,reader,extension):
+    key = key.strip('/*').strip('*').strip('/')
     bucket = s3.Bucket(bucket)
-    pfx_objs = bucket.objects.filter(Prefix=key[:-1])
+    pfx_objs = bucket.objects.filter(Prefix=key)
     pfx_dfs = []
     for obj in pfx_objs:
         if obj.key.endswith('/'):

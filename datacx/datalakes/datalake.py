@@ -45,7 +45,7 @@ class S3():
             raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
         reader = _readers[extension]
         bucket, key =  s3_path.split('/',3)[2:]
-        if key.endswith('*') or key.endswith('/'):
+        if key.endswith('*') or key.endswith('/*') or key.endswith('/'):
             pfx_dfs = _multi_file_load(self._s3,bucket=bucket,key=key,reader=reader,extension=extension)
             df = pd.concat(pfx_dfs,ignore_index=True)
             return df
