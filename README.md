@@ -46,6 +46,25 @@ label: POSITIVE, with score: 0.9967
 # Write the results to the MongoDB
 >>> mongodb.write_dataframe(df,'reviewdb','review_sentiments')
 ```
+## Supported Connectors
+  
+|Data Sources| Type | Read | Write |
+|------------|------| ----  | -----|
+|S3|datalake| &#9745;   | &#9745; |
+|GCS|datalake| &#9745;   | &#9745; |
+|Azure Blob Stoarge| datalake| &#9745;   | &#9745; |
+|Snowflake| datawarehouse | &#9745;   | &#9744; |
+|BigQuery| datawarehouse | &#9745;   | &#9744; |
+|StarRocks| datawarehouse | &#9745;   | &#9744; |
+|Redshift| datawarehouse | &#9745;   | &#9744; |
+|PostgreSQL| database | &#9745;   | &#9744; |
+|MySQL| database | &#9745;   | &#9744; |
+|MsSQL| database | &#9745;   | &#9744; |
+|MariaDB| database | &#9745;   | &#9744; |
+|Oracle| database | &#9745;   | &#9744; |
+|SQLite| database | &#9745;   | &#9744; |
+|MongoDB| nosql | &#9745;   | &#9745; |
+|ElasticSearch| nosql | &#9745;   | &#9744; |
 
 ## Acknowledgement
 
