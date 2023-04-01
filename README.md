@@ -19,6 +19,9 @@ pip install datacx
 >>> from transformers import pipeline
 
 >>> dcx = DataCX('./dcx_config.yaml') # Check the sample_dcx_config.yaml for reference
+>>> print(dcx.get_supported_data_sources_list())
+['s3', 'gcs', 'azureblob', 'bigquery', 'snowflake', 'redshift', 'starrocks', 'postgresql', 'mysql', 'oracle', 'mssql', 'mariadb', 'sqlite', 'elasticsearch', 'mongodb']
+
 >>> mongodb = dcx.connect('mongodb')
 >>> df = mongodb.read_as_dataframe(database='reviewdb',collection='reviews')
 >>> df.head()
