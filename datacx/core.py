@@ -75,6 +75,7 @@ class DataCX():
         Returns:
             object: dcx data source object
         """
+        data_source = data_source.lower()
         supported_data_sources = self.get_supported_data_sources_list()
         if data_source not in supported_data_sources:
             raise UnSupportedDataSourceException("Mentioned Data Source not supported. Supported Data Sources are",supported_data_sources)
