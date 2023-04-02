@@ -12,6 +12,13 @@ This library helps to read and write data from most of the data sources. It acce
 ```bash
 pip install datacx
 ```
+**Install from sources**
+
+Alternatively, you can also clone the latest version from the [repository](https://github.com/VinishUchiha/datacx) and install it directly from the source code:
+
+```bash
+pip install -e .
+```
 
 ## Quick tour
 ```python
