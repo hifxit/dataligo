@@ -6,7 +6,7 @@ A Data Connector for all the data sources
 
 <div align="left">
 
-This library helps to read and write data from most of the data sources. It accelerate the ML development process without worrying about the multiple data connectors.
+This library helps to read and write data from most of the data sources. It accelerate the ML and ETL process without worrying about the multiple data connectors.
 
 ## Installation
 ```bash
