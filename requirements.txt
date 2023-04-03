@@ -8,8 +8,6 @@ snowflake-connector-python[pandas]
 mysql-connector-python-rf
 elasticsearch
 pymongo
-mariadb
-pyarrow
 fastparquet
 openpyxl
 xlrd
