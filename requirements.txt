@@ -4,6 +4,7 @@ azure-storage-blob >= 12.15.0
 pandas
 PyYAML
 connectorx
+sqlalchemy==1.4.46
 snowflake-connector-python[pandas]
 mysql-connector-python-rf
 elasticsearch
