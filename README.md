@@ -10,7 +10,7 @@ This library helps to read and write data from most of the data sources. It acce
 
 ## Installation
 ```bash
-pip install datacx
+pip install -U datacx
 ```
 **Install from sources**
 
