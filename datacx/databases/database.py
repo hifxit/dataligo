@@ -3,6 +3,8 @@ import pandas as pd
 #import mariadb
 from ..exceptions import ParamsMissingException
 from ..datawarehouses.utils import _df_to_file_writer
+import os
+from sqlalchemy import create_engine
 
 class DBCX():
     def __init__(self,config,db_type):
@@ -51,6 +53,16 @@ class DBCX():
         _df_to_file_writer(df, filename=filename)
         print('File saved to the path:', filename)
 
+    def write_dataframe(self, df,  table_name: str, database: str = None, if_exists: str = 'append',index=False):
+        if self._dbname_in_config:
+            engine = create_engine(self.conn_str)
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        elif database:
+            engine = create_engine(f"{self._conn_str}/{database}")
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        else:
+            raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
+
 class Postgres(DBCX):
     def __init__(self,config):
         """
@@ -90,6 +102,17 @@ class MsSQL(DBCX):
             config (dict): Automatically loaded from the config file (yaml)
         """
         super().__init__(config,'mssql')
+    
+    def write_dataframe(self, df, table_name: str, database: str = None, if_exists: str = 'append', index=False):
+        conn_str = self.conn_str.replace('mssql','mssql+pymssql')
+        if self._dbname_in_config:
+            engine = create_engine(conn_str)
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        elif database:
+            engine = create_engine(f"{conn_str}/{database}")
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        else:
+            raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
 
 class Sqlite():
     def __init__(self,config):
@@ -117,6 +140,16 @@ class Sqlite():
             return cx.read_sql('sqlite://' + db_path, query, return_type=return_type)
         else:
             return cx.read_sql(self._sqlite_conn, query, return_type=return_type)
+        
+    def write_dataframe(self,df, table_name: str, db_path: str = None, if_exists: str = 'append',index=False):
+        if db_path:
+            abs_db_path = os.path.abspath(db_path)
+        else:
+            db_path = self._sqlite_conn.split('//')[-1]
+            abs_db_path = os.path.abspath(db_path)
+        conn_str = 'sqlite:///'+abs_db_path
+        engine = create_engine(conn_str)
+        df.to_sql(table_name,engine,if_exists=if_exists,index=index)
 
 
 # class MariaDB():
