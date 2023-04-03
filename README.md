@@ -67,11 +67,11 @@ label: POSITIVE, with score: 0.9967
 |BigQuery| datawarehouse | &#9745;   | &#9744; |
 |StarRocks| datawarehouse | &#9745;   | &#9744; |
 |Redshift| datawarehouse | &#9745;   | &#9744; |
-|PostgreSQL| database | &#9745;   | &#9744; |
-|MySQL| database | &#9745;   | &#9744; |
-|MsSQL| database | &#9745;   | &#9744; |
-|Oracle| database | &#9745;   | &#9744; |
-|SQLite| database | &#9745;   | &#9744; |
+|PostgreSQL| database | &#9745;   | &#9745; |
+|MySQL| database | &#9745;   | &#9745; |
+|MsSQL| database | &#9745;   | &#9745; |
+|Oracle| database | &#9745;   | &#9745; |
+|SQLite| database | &#9745;   | &#9745; |
 |MongoDB| nosql | &#9745;   | &#9745; |
 |ElasticSearch| nosql | &#9745;   | &#9744; |
 
