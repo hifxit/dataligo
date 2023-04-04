@@ -1,6 +1,8 @@
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
 from pymongo import MongoClient
 import pandas as pd
+
 
 class ElasticSearch():
     def __init__(self,config):
@@ -18,7 +20,8 @@ class ElasticSearch():
                 self._es = Elasticsearch([config['HOST']],api_key=config['API_KEY'])
         else:
             self._es = Elasticsearch([config['HOST']])
-    
+
+
     def read_as_dataframe(self,query: str,index: str,return_type='pandas'):
         """
         Takes query and index as arguments and return the dataframe
@@ -36,6 +39,28 @@ class ElasticSearch():
             )
         records = [i['_source'] for i in response['hits']['hits']]
         return pd.DataFrame(records)
+
+
+    def write_dataframe(self, df, index: str):
+        """
+        Takes DataFrame, index name as arguments and write the dataframe to ElasticSearch.
+
+        Args:
+            df (DataFrame): Dataframe which need to be inserted to es
+            index (str): index name
+        """
+        records = df.to_dict('records')
+        actions = [
+            {
+                "_index": index,
+                "_source": doc
+            }
+            for doc in records
+        ]
+        # Perform the bulk insert operation
+        bulk(self._es, actions)
+        print("Dataframe saved to the es index:", f"{index}")
+
 
 class MongoDB():
     def __init__(self, config) -> None:
