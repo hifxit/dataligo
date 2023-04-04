@@ -71,6 +71,8 @@ databases:
 nosql:
   elasticsearch:
     HOST: ""
+    USERNAME: ""
+    PASSWORD: ""
     API_KEY: ""
   
   mongodb:

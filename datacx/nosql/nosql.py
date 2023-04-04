@@ -10,11 +10,14 @@ class ElasticSearch():
         Args:
             config (dict): Automatically loaded from the config file (yaml)
         """
-        if 'API_KEY' in config:
+        if 'USERNAME' in config and 'PASSWORD' in config:
+            if config['USERNAME'] and config['PASSWORD']:
+                self._es = Elasticsearch([config['HOST']],basic_auth=(config['USERNAME'],config['PASSWORD']))
+        elif 'API_KEY' in config:
             if config['API_KEY']:
-                self._es = ElasticSearch([config['HOST']],api_key=config['API_KEY'])
+                self._es = Elasticsearch([config['HOST']],api_key=config['API_KEY'])
         else:
-            self._es = ElasticSearch([config['HOST']])
+            self._es = Elasticsearch([config['HOST']])
     
     def read_as_dataframe(self,query: str,index: str,return_type='pandas'):
         """
@@ -71,8 +74,8 @@ class MongoDB():
             collection (str): collection name
         """
         records = df.to_dict('records')
-        self._mdb[database][collections].insert_many(records)
-        print("Dataframe saved to the collections:", f"{collections}")
+        self._mdb[database][collection].insert_many(records)
+        print("Dataframe saved to the collections:", f"{collection}")
 
 
 class DynamoDB():
