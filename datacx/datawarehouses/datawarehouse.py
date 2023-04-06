@@ -55,6 +55,7 @@ class SnowFlake():
     def write_dataframe(self,df,table_name: str, database: str = None, schema: str = None, protocol: str = 'https'):
         sf_conn = _snowflake_connector(self._config, database=database, schema=schema, protocol=protocol)
         success, nchunks, nrows, _ = write_pandas(sf_conn, df, table_name)
+        print("Dataframe saved to the snowflake table:", f"{table_name}")
         
 
 class BigQuery():
@@ -170,8 +171,10 @@ class StarRocks():
             conn_str = f"{conn_str}/{config['DATABASE']}"
             engine = create_engine(conn_str)
             df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+            print("Dataframe saved to the starrocks table:", f"{table_name}")
         elif database:
             engine = create_engine(f"{conn_str}/{database}")
             df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+            print("Dataframe saved to the starrocks table:", f"{table_name}")
         else:
             raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
