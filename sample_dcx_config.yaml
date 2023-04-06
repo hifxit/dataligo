@@ -21,6 +21,8 @@ datawarehouses:
     PORT: ""
     DATABASE: ""
     SCHEMA: ""
+    WAREHOUSE: ""
+    ROLE: ""
 
   bigquery:
     GOOGLE_APPLICATION_CREDENTIALS_PATH: ''
