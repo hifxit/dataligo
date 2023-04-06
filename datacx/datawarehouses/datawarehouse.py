@@ -4,6 +4,8 @@ from ..databases.database import DBCX
 from ..exceptions import ParamsMissingException
 import mysql.connector
 import pandas as pd
+from sqlalchemy import create_engine
+from snowflake.connector.pandas_tools import write_pandas
 
 class SnowFlake():
     def __init__(self, config):
@@ -48,6 +50,12 @@ class SnowFlake():
         df = _snowflake_executer(sf_conn, query, return_type='pandas')
         _df_to_file_writer(df,filename)
         print('File saved to the path:', filename)
+
+    # source: https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-api#write_pandas
+    def write_dataframe(self,df,table_name: str, database: str = None, schema: str = None, protocol: str = 'https'):
+        sf_conn = _snowflake_connector(self._config, database=database, schema=schema, protocol=protocol)
+        success, nchunks, nrows, _ = write_pandas(sf_conn, df, table_name)
+        
 
 class BigQuery():
     def __init__(self,config):
@@ -154,3 +162,16 @@ class StarRocks():
         df = self.read_as_dataframe(query=query,database=database)
         _df_to_file_writer(df,filename=filename)
         print('File saved to the path:', filename)
+
+    def write_dataframe(self, df,  table_name: str, database: str = None, if_exists: str = 'append',index=False):
+        config = self._config
+        conn_str = f"mysql://{config['USERNAME']}:{config['PASSWORD']}@{config['HOST']}:{config['PORT']}"
+        if self._dbname_in_config:
+            conn_str = f"{conn_str}/{config['DATABASE']}"
+            engine = create_engine(conn_str)
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        elif database:
+            engine = create_engine(f"{conn_str}/{database}")
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        else:
+            raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
