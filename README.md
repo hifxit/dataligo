@@ -63,9 +63,9 @@ label: POSITIVE, with score: 0.9967
 |S3|datalake| &#9745;   | &#9745; |
 |GCS|datalake| &#9745;   | &#9745; |
 |Azure Blob Stoarge| datalake| &#9745;   | &#9745; |
-|Snowflake| datawarehouse | &#9745;   | &#9744; |
+|Snowflake| datawarehouse | &#9745;   | &#9745; |
 |BigQuery| datawarehouse | &#9745;   | &#9744; |
-|StarRocks| datawarehouse | &#9745;   | &#9744; |
+|StarRocks| datawarehouse | &#9745;   | &#9745; |
 |Redshift| datawarehouse | &#9745;   | &#9744; |
 |PostgreSQL| database | &#9745;   | &#9745; |
 |MySQL| database | &#9745;   | &#9745; |
@@ -73,7 +73,7 @@ label: POSITIVE, with score: 0.9967
 |Oracle| database | &#9745;   | &#9745; |
 |SQLite| database | &#9745;   | &#9745; |
 |MongoDB| nosql | &#9745;   | &#9745; |
-|ElasticSearch| nosql | &#9745;   | &#9744; |
+|ElasticSearch| nosql | &#9745;   | &#9745; |
 
 ## Acknowledgement
 
