@@ -6,6 +6,7 @@ import mysql.connector
 import pandas as pd
 from sqlalchemy import create_engine
 from snowflake.connector.pandas_tools import write_pandas
+from google.oauth2 import service_account
 
 class SnowFlake():
     def __init__(self, config):
@@ -66,6 +67,7 @@ class BigQuery():
         Args:
             config (dict): Automatically loaded from the config file (yaml)
         """
+        self._config = config
         self._bq_conn = 'bigquery://' + config['GOOGLE_APPLICATION_CREDENTIALS_PATH']
 
     def read_as_dataframe(self, query: str,return_type: str ='pandas'):
@@ -92,6 +94,11 @@ class BigQuery():
         df = cx.read_sql(self._bq_conn, query,return_type='pandas')
         _df_to_file_writer(df,filename)
         print('File saved to the path:', filename)
+
+    def write_dataframe(self, df, table_name: str, project_id: str, if_exists: str = 'append') -> None:
+        credentials = service_account.Credentials.from_service_account_file(self._config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
+        df.to_gbq(destination_table=table_name, project_id=project_id, if_exists=if_exists, credentials=credentials)
+        print("Dataframe saved to the table:", f"{table_name}")
 
     
 class Redshift(DBCX):
