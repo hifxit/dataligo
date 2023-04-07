@@ -54,6 +54,16 @@ class SnowFlake():
 
     # source: https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-api#write_pandas
     def write_dataframe(self,df,table_name: str, database: str = None, schema: str = None, protocol: str = 'https'):
+        """
+        Takes dataframe, table name as arguments and write the dataframe to SnowFlake
+
+        Args:
+            df (Dataframe): Dataframe which need to be loaded
+            table_name (str): table name
+            database (str, optional): database name. Defaults to None.
+            schema (str, optional): schema name. Defaults to None.
+            protocol (str, optional): protocol used. Defaults to 'https'.
+        """
         sf_conn = _snowflake_connector(self._config, database=database, schema=schema, protocol=protocol)
         success, nchunks, nrows, _ = write_pandas(sf_conn, df, table_name)
         print("Dataframe saved to the snowflake table:", f"{table_name}")
@@ -96,6 +106,15 @@ class BigQuery():
         print('File saved to the path:', filename)
 
     def write_dataframe(self, df, table_name: str, project_id: str, if_exists: str = 'append') -> None:
+        """
+        Takes dataframe, table name, project id as arguments and write the dataframe to BigQuery
+
+        Args:
+            df (DataFrame): Dataframe which need to be loaded
+            table_name (str): table name
+            project_id (str): project id
+            if_exists (str, optional): operation to do if the table exists. Defaults to 'append'.
+        """
         credentials = service_account.Credentials.from_service_account_file(self._config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
         df.to_gbq(destination_table=table_name, project_id=project_id, if_exists=if_exists, credentials=credentials)
         print("Dataframe saved to the table:", f"{table_name}")
@@ -112,6 +131,16 @@ class Redshift(DBCX):
         super().__init__(config,'redshift')
     
     def write_dataframe(self, df,  table_name: str, database: str = None, if_exists: str = 'append',index=False):
+        """
+        Takes dataframe, table name as arguments and write the dataframe to Redshift
+
+        Args:
+            df (DataFrame): Dataframe which need to be loaded
+            table_name (str): table name
+            database (str, optional): database name. Defaults to None.
+            if_exists (str, optional): operation to do if the table exists. Defaults to 'append'.
+            index (bool, optional): Write DataFrame index as a column. Defaults to False.
+        """
         conn_str = self._conn_str.replace('redshift','postgresql')
         if self._dbname_in_config:
             engine = create_engine(conn_str)
@@ -185,6 +214,16 @@ class StarRocks():
         print('File saved to the path:', filename)
 
     def write_dataframe(self, df,  table_name: str, database: str = None, if_exists: str = 'append',index=False):
+        """
+        Takes dataframe, table name as arguments and write the dataframe to StarRocks
+
+        Args:
+            df (DataFrame): Dataframe which need to be loaded
+            table_name (str): table name
+            database (str, optional): database name. Defaults to None.
+            if_exists (str, optional): operation to do if the table exists. Defaults to 'append'.
+            index (bool, optional): Write DataFrame index as a column. Defaults to False.
+        """
         config = self._config
         conn_str = f"mysql://{config['USERNAME']}:{config['PASSWORD']}@{config['HOST']}:{config['PORT']}"
         if self._dbname_in_config:

@@ -55,6 +55,16 @@ class DBCX():
         print('File saved to the path:', filename)
 
     def write_dataframe(self, df,  table_name: str, database: str = None, if_exists: str = 'append',index=False):
+        """
+        Takes dataframe, table name as arguments and write the dataframe to database
+
+        Args:
+            df (DataFrame): Dataframe which need to be loaded
+            table_name (str): table name
+            database (str, optional): database name. Defaults to None.
+            if_exists (str, optional): operation to do if the table exists. Defaults to 'append'.
+            index (bool, optional): Write DataFrame index as a column. Defaults to False.
+        """
         if self._dbname_in_config:
             engine = create_engine(self._conn_str)
             df.to_sql(table_name,engine,if_exists=if_exists,index=index)
@@ -107,6 +117,16 @@ class MsSQL(DBCX):
         super().__init__(config,'mssql')
     
     def write_dataframe(self, df, table_name: str, database: str = None, if_exists: str = 'append', index=False):
+        """
+        Takes dataframe, table name as arguments and write the dataframe to MsSQL
+
+        Args:
+            df (DataFrame): Dataframe which need to be loaded
+            table_name (str): table name
+            database (str, optional): database name. Defaults to None.
+            if_exists (str, optional): operation to do if the table exists. Defaults to 'append'.
+            index (bool, optional): Write DataFrame index as a column. Defaults to False.
+        """
         conn_str = self.conn_str.replace('mssql','mssql+pymssql')
         if self._dbname_in_config:
             engine = create_engine(conn_str)
@@ -147,6 +167,16 @@ class Sqlite():
             return cx.read_sql(self._sqlite_conn, query, return_type=return_type)
         
     def write_dataframe(self,df, table_name: str, db_path: str = None, if_exists: str = 'append',index=False):
+        """
+        Takes dataframe, table name as arguments and write the dataframe to SQLite
+
+        Args:
+            df (DataFrame): Dataframe which need to be loaded
+            table_name (str): table name
+            db_path (str, optional): database path. Defaults to None.
+            if_exists (str, optional): operation to do if the table exists. Defaults to 'append'.
+            index (bool, optional): Write DataFrame index as a column. Defaults to False.
+        """
         if db_path:
             abs_db_path = os.path.abspath(db_path)
         else:
