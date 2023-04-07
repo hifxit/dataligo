@@ -15,6 +15,7 @@ class DBCX():
             config (dict): Automatically loaded from the config file (yaml)
             db_type (str): database type (eg: mysql, postgresql, etc). It is passed by the child class
         """
+        self.db_type = db_type
         self._conn_str = f"{db_type}://{config['USERNAME']}:{config['PASSWORD']}@{config['HOST']}:{config['PORT']}"
         if 'DATABASE' in config:
             if config['DATABASE']:
@@ -55,7 +56,7 @@ class DBCX():
 
     def write_dataframe(self, df,  table_name: str, database: str = None, if_exists: str = 'append',index=False):
         if self._dbname_in_config:
-            engine = create_engine(self.conn_str)
+            engine = create_engine(self._conn_str)
             df.to_sql(table_name,engine,if_exists=if_exists,index=index)
             print("Dataframe saved to the table:", f"{table_name}")
         elif database:

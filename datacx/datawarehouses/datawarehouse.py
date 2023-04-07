@@ -103,6 +103,19 @@ class Redshift(DBCX):
             config (dict): Automatically loaded from the config file (yaml)
         """
         super().__init__(config,'redshift')
+    
+    def write_dataframe(self, df,  table_name: str, database: str = None, if_exists: str = 'append',index=False):
+        conn_str = self._conn_str.replace('redshift','postgresql')
+        if self._dbname_in_config:
+            engine = create_engine(conn_str)
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+            print("Dataframe saved to the table:", f"{table_name}")
+        elif database:
+            engine = create_engine(f"{conn_str}/{database}")
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+            print("Dataframe saved to the table:", f"{table_name}")
+        else:
+            raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
         
 class StarRocks():
     """
