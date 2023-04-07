@@ -187,6 +187,15 @@ class Sqlite():
         df.to_sql(table_name,engine,if_exists=if_exists,index=index)
         print("Dataframe saved to the sqlite table:", f"{table_name}")
 
+class MariaDB(DBCX):
+    def __init__(self,config):
+        """
+        MariaDB class create mariadb dcx object to load data from mariadb database, through mysql protocol 
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
+        super().__init__(config,'mysql')
 
 # class MariaDB():
 #     def __init__(self,config):
