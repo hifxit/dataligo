@@ -69,6 +69,7 @@ label: POSITIVE, with score: 0.9967
 |Redshift| datawarehouse | &#9745;   | &#9745; |
 |PostgreSQL| database | &#9745;   | &#9745; |
 |MySQL| database | &#9745;   | &#9745; |
+|MariaDB| database | &#9745;   | &#9745; |
 |MsSQL| database | &#9745;   | &#9745; |
 |Oracle| database | &#9745;   | &#9745; |
 |SQLite| database | &#9745;   | &#9745; |
