@@ -1,7 +1,7 @@
 import yaml
 from .datalakes.datalake import S3, GCS, AzureBlob
 from .datawarehouses.datawarehouse import BigQuery, SnowFlake, Redshift, StarRocks
-from .databases.database import Postgres, MySQL, Oracle, MsSQL, Sqlite
+from .databases.database import Postgres, MySQL, Oracle, MsSQL, Sqlite, MariaDB
 from .nosql.nosql import ElasticSearch, MongoDB
 from .exceptions import ConfigMissingException, UnSupportedDataSourceException
 
@@ -17,7 +17,7 @@ DATA_SOURCES = {
     'mysql': MySQL, # MySQL
     'oracle': Oracle, # Oracle
     'mssql': MsSQL, # MsSQL, SQLServer
-#    'mariadb': MariaDB, # MariaDB
+    'mariadb': MariaDB, # MariaDB
     'sqlite': Sqlite, # Sqlite
     'elasticsearch': ElasticSearch, # ElasticSearch
     'mongodb': MongoDB, # MongoDB
