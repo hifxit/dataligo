@@ -33,14 +33,9 @@ def _multi_file_load(s3,bucket,key,reader,extension):
     return pfx_dfs
 
 def _s3_upload_folder(s3, local_folder_path,bucket,key):
-    for root, dirs, files in os.walk(local_folder_path):
-
+    for root, _ , files in os.walk(local_folder_path):
         for filename in files:
-
-            # construct the full local path
             local_path = os.path.join(root, filename)
-
-            # construct the full Dropbox path
             relative_path = os.path.relpath(local_path, local_folder_path)
             s3_path = os.path.join(key, relative_path)
             s3.Object(bucket, s3_path).upload_file(local_path,
