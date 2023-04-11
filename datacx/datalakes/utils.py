@@ -12,14 +12,14 @@ multipart_config = TransferConfig(multipart_threshold=1024 * 50,
                         multipart_chunksize=1024 * 10,
                         use_threads=True)
 
-def _bytes_to_df(body,extension,reader):
+def _bytes_to_df(body,extension,reader,encoding):
     if extension=='csv':
-        df = reader(body, encoding='utf-8')
+        df = reader(body, encoding=encoding)
     else:
         df = reader(body)
     return df
 
-def _multi_file_load(s3,bucket,key,reader,extension):
+def _multi_file_load(s3,bucket,key,reader,extension,encoding):
     key = key.strip('/*').strip('*').strip('/')
     bucket = s3.Bucket(bucket)
     pfx_objs = bucket.objects.filter(Prefix=key)
@@ -28,7 +28,7 @@ def _multi_file_load(s3,bucket,key,reader,extension):
         if obj.key.endswith('/'):
             continue
         body = BytesIO(obj.get()['Body'].read())
-        df = _bytes_to_df(body,extension,reader)
+        df = _bytes_to_df(body,extension,reader,encoding)
         pfx_dfs.append(df)
     return pfx_dfs
 
