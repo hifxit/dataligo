@@ -4,7 +4,9 @@ from azure.storage.blob import BlobServiceClient
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
-from .utils import _s3_writer, _multi_file_load, _bytes_to_df, _gcs_writer, _azure_blob_writer, _s3_upload_file, _s3_download_file
+from .utils import (_s3_writer, _multi_file_load, _bytes_to_df, 
+                    _gcs_writer, _azure_blob_writer, _s3_upload_file, 
+                    _s3_download_file, _s3_upload_folder)
 from ..exceptions import ExtensionNotSupportException
 import os
 
@@ -94,6 +96,17 @@ class S3():
         """
         _s3_download_file(self._s3, s3_path=s3_path,bucket=bucket, key=key,path_to_download=path_to_download)
 
+    def upload_folder(self, local_folder_path: str, bucket: str, key: str) -> None:
+        """
+        Takes local path, bucket and key as arguments and upload the folder to s3
+
+        Args:
+            local_folder_path (str): local path of the folder want to be uploaded
+            bucket (str): s3 bucket name
+            key (str): s3 key name
+        """
+        _s3_upload_folder(self._s3,local_folder_path, bucket, key)
+        print("Folder uploaded to the s3 path:", f"s3://{bucket}/{key}")
 
 class GCS():
     def __init__(self,config):
