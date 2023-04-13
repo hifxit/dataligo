@@ -27,7 +27,7 @@ dependencies = [
     "elasticsearch > 8.0.0",
     "sqlalchemy==1.4.46",
     "pymongo",
-    # "mariadb",
+    "dynamo_pandas",
     "fastparquet",
     "openpyxl",
     "xlrd",
