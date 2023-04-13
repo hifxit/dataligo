@@ -1,17 +1,18 @@
 import boto3
 from google.cloud import storage
 from azure.storage.blob import BlobServiceClient
+from typing import Dict
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
-from .utils import (_s3_writer, _multi_file_load, _bytes_to_df, 
+from .utils import (_s3_writer, _multi_file_load, 
                     _gcs_writer, _azure_blob_writer, _s3_upload_file, 
                     _s3_download_file, _s3_upload_folder)
 from ..exceptions import ExtensionNotSupportException
 import os
 
 _readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
-            'xls': pd.read_excel, 'ods': pd.read_excel, 'json': pd.read_json}
+            'xls': pd.read_excel, 'ods': pd.read_excel, 'json': pd.read_json,'txt': pd.read_csv}
 
 class S3():
     def __init__(self,config):
@@ -27,7 +28,7 @@ class S3():
             aws_secret_access_key=config['AWS_SECRET_ACCESS_KEY'],
         )
 
-    def read_as_dataframe(self,s3_path: str, encoding='utf-8', extension='csv', return_type='pandas'):
+    def read_as_dataframe(self,s3_path: str, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
         """
         Takes s3 path as arguments and return dataframe.
 
@@ -48,13 +49,13 @@ class S3():
         reader = _readers[extension]
         bucket, key =  s3_path.split('/',3)[2:]
         if key.endswith('*') or key.endswith('/*') or key.endswith('/'):
-            pfx_dfs = _multi_file_load(self._s3,bucket=bucket,key=key,reader=reader,extension=extension,encoding=encoding)
+            pfx_dfs = _multi_file_load(self._s3,bucket=bucket,key=key,reader=reader,extension=extension,pandas_args=pandas_args)
             df = pd.concat(pfx_dfs,ignore_index=True)
             return df
         else:
             obj = self._s3.Object(bucket_name=bucket, key=key)
             stream = BytesIO(obj.get()['Body'].read())
-            df = _bytes_to_df(stream,extension,reader,encoding)
+            df = reader(stream, **pandas_args)
             return df
         
     def write_dataframe(self,df,bucket: str, filename: str, extension='csv', index=False, sep=',') -> None:
@@ -118,7 +119,7 @@ class GCS():
         """
         self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
 
-    def read_as_dataframe(self,gcs_path: str, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self,gcs_path: str, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
         """Takes gcs path as argument and return dataframe.
 
         Args:
@@ -149,14 +150,14 @@ class GCS():
                     blob = bucket.blob(blob)
                     data = blob.download_as_string()
                     stream = BytesIO(data)
-                    df = _bytes_to_df(stream,extension,reader)
+                    df = reader(stream, **pandas_args)
                     dfs.append(df)
             return pd.concat(dfs,ignore_index=True)
         else:
             blob = bucket.blob(blob_name)
             data = blob.download_as_string()
             stream = BytesIO(data)
-            df = _bytes_to_df(stream,extension,reader)
+            df = reader(stream, **pandas_args)
             return df
 
     def write_dataframe(self, df, bucket, filename, extension='csv',index=False, sep=','):
@@ -219,7 +220,7 @@ class AzureBlob():
         self._abs = BlobServiceClient(account_url=f"https://{config['ACCOUNT_NAME']}.blob.core.windows.net",
                                         credential=config['ACCOUNT_KEY'])
         
-    def read_as_dataframe(self, container_name: str,blob_name: str, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self, container_name: str,blob_name: str, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
         """Takes Azure Storage account container name and blob name and return datafarme.
 
         Args:
@@ -248,13 +249,13 @@ class AzureBlob():
                     stream = BytesIO(blob_client.download_blob().readall())
                     extension = Path(blob).suffix[1:]
                     reader = _readers[extension]
-                    df = _bytes_to_df(stream,extension,reader)
+                    df = reader(stream, **pandas_args)
                     dfs.append(df)
             return pd.concat(dfs,ignore_index=True)
         else:
             blob_client = container_client.get_blob_client(blob_name)
             stream = BytesIO(blob_client.download_blob().readall())
-            df = _bytes_to_df(stream,extension,reader)
+            df = reader(stream, **pandas_args)
             return df
         
     def write_dataframe(self, df, container_name: str, filename: str, overwrite=True, extension='csv',index=False, sep=','):
