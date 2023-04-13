@@ -27,6 +27,7 @@ def _multi_file_load(s3,bucket,key,reader,extension,pandas_args):
     return pfx_dfs
 
 def _s3_upload_folder(s3, local_folder_path,bucket,key):
+    key = key.rstrip('/')+'/'+Path(local_folder_path).stem
     for root, _ , files in os.walk(local_folder_path):
         for filename in files:
             local_path = os.path.join(root, filename)
