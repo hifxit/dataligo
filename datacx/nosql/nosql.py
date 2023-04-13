@@ -2,6 +2,8 @@ from elasticsearch import Elasticsearch
 from pymongo import MongoClient
 import pandas as pd
 from elasticsearch.helpers import bulk
+from dynamo_pandas import put_df, get_df
+from typing import List, Dict
 
 class ElasticSearch():
     def __init__(self,config):
@@ -100,4 +102,13 @@ class MongoDB():
 
 
 class DynamoDB():
-    pass
+    def __init__(self, config) -> None:
+        self._ddb = {'aws_access_key_id':config['AWS_ACCESS_KEY_ID'],
+                     'aws_secret_access_key':config['AWS_SECRET_ACCESS_KEY']}
+
+    def read_as_dataframe(self, table: str, keys=None,attributes=None, dtype=None,return_type='pandas'):
+        return get_df(table, keys=keys, attributes=attributes, dtype=dtype, boto3_kwargs=self._ddb)
+    
+    def write_dataframe(self, df, table: str):
+        put_df(df,table=table,boto3_kwargs=self._ddb)
+        print("Dataframe records updated to the DynamoDB table:", table)
