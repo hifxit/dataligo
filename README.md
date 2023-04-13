@@ -75,6 +75,7 @@ label: POSITIVE, with score: 0.9967
 |SQLite| database | &#9745;   | &#9745; |
 |MongoDB| nosql | &#9745;   | &#9745; |
 |ElasticSearch| nosql | &#9745;   | &#9745; |
+|DynamoDB| nosql | &#9745;   | &#9745; |
 
 ## Acknowledgement
 
