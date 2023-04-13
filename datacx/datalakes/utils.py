@@ -26,7 +26,7 @@ def _multi_file_load(s3,bucket,key,reader,extension,pandas_args):
         pfx_dfs.append(df)
     return pfx_dfs
 
-def _s3_upload_folder(s3, local_folder_path,bucket,key):
+def _s3_upload_folder(s3, local_folder_path, bucket, key):
     key = key.rstrip('/')+'/'+Path(local_folder_path).stem
     for root, _ , files in os.walk(local_folder_path):
         for filename in files:
@@ -34,11 +34,23 @@ def _s3_upload_folder(s3, local_folder_path,bucket,key):
             relative_path = os.path.relpath(local_path, local_folder_path)
             s3_path = os.path.join(key, relative_path)
             s3.Object(bucket, s3_path).upload_file(local_path,
-                            Config=multipart_config,
-                            Callback=ProgressPercentage(local_path)
+                            Config=multipart_config
                             )
-            print('\n')
 
+def _s3_download_folder(s3,s3_path, bucket, key, local_path_to_download='.'):
+    if s3_path:
+        bucket, key =  s3_path.split('/',3)[2:]
+    my_bucket = s3.Bucket(bucket)
+    folder_to_download = Path(key).stem
+    local_path = os.path.join(local_path_to_download, folder_to_download)
+    os.makedirs(local_path)
+    for obj in my_bucket.objects.filter(Prefix=key):
+        key = obj.key
+        if key.endswith('/'):
+            os.makedirs(os.path.join(local_path,key))
+        else:
+            s3.Object(bucket, key).download_file(os.path.join(local_path,key),Config=multipart_config)
+    print("Folder downloaded to the path:", f"{local_path}")
 
 # source: https://medium.com/analytics-vidhya/aws-s3-multipart-upload-download-using-boto3-python-sdk-2dedb0945f11
 # source: https://boto3.amazonaws.com/v1/documentation/api/latest/_modules/boto3/s3/transfer.html

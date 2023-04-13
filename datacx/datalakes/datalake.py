@@ -5,9 +5,9 @@ from typing import Dict
 import pandas as pd
 from io import BytesIO
 from pathlib import Path
-from .utils import (_s3_writer, _multi_file_load, 
-                    _gcs_writer, _azure_blob_writer, _s3_upload_file, 
-                    _s3_download_file, _s3_upload_folder)
+from .utils import (_s3_writer, _multi_file_load, _gcs_writer,
+                     _azure_blob_writer, _s3_upload_file, 
+                    _s3_download_file, _s3_upload_folder, _s3_download_folder)
 from ..exceptions import ExtensionNotSupportException
 import os
 
@@ -85,7 +85,7 @@ class S3():
         _s3_upload_file(self._s3, file_path=source_file_path, bucket=bucket, key=key)
         print("File uploaded to the s3 path:", f"s3://{bucket}/{key}")
 
-    def download_file(self, s3_path: str = None, bucket: str = None, key: str = None, path_to_download: str = '.'):
+    def download_file(self, s3_path: str = None, bucket: str = None, key: str = None, local_path_to_download: str = '.'):
         """
         Takes s3 path or (bucket and key name) as arguments and download the file
 
@@ -95,7 +95,7 @@ class S3():
             key (str, optional): S3 Key name, if S3 path is not provied. Defaults to None.
             path_to_download (str, optional): save location. Defaults to '.' (current directory).
         """
-        _s3_download_file(self._s3, s3_path=s3_path,bucket=bucket, key=key,path_to_download=path_to_download)
+        _s3_download_file(self._s3, s3_path=s3_path,bucket=bucket, key=key,path_to_download=local_path_to_download)
 
     def upload_folder(self, local_folder_path: str, bucket: str, key: str) -> None:
         """
@@ -108,6 +108,18 @@ class S3():
         """
         _s3_upload_folder(self._s3,local_folder_path, bucket, key)
         print("Folder uploaded to the s3 path:", f"s3://{bucket}/{key}")
+
+    def download_folder(self, s3_path: str = None, bucket: str = None, key: str = None, local_path_to_download: str = '.'):
+        """
+        Takes s3 path or (bucket and key name) as arguments and download the folder
+
+        Args:
+            s3_path (str, optional): S3 path from where it needs to download the folder. Defaults to None.
+            bucket (str, optional): S3 bucket name, if S3 path is not provided . Defaults to None.
+            key (str, optional): S3 Key name, if S3 path is not provied. Defaults to None.
+            local_path_to_download (str, optional): save location. Defaults to '.' (current directory).
+        """
+        _s3_download_folder(self._s3, s3_path=s3_path, bucket=bucket,key=key,local_path_to_download=local_path_to_download)
 
 class GCS():
     def __init__(self,config):
