@@ -320,3 +320,15 @@ class AzureBlob():
         with open(file=download_file_path, mode="wb") as download_file:
             download_file.write(container_client.download_blob(blob_name).readall())
         print('File downloaded to the path:', download_file_path)
+
+    def upload_folder(self, local_folder_path: str, container_name: str, blob_name: str) -> None:
+        container_client = self._abs.get_container_client(container_name)
+        for root, _, files in os.walk(local_folder_path):
+            for filename in files:
+                local_path = os.path.join(root, filename)
+                relative_path = os.path.relpath(local_path, local_folder_path)
+                blob_name = relative_path.replace("\\", "/")
+                blob_client = container_client.get_blob_client(blob_name)
+                with open(local_path, "rb") as data:
+                    blob_client.upload_blob(data)
+        print("Folder uploaded to the container", container_name, "with the blob name of", Path(local_folder_path).stem)
