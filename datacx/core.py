@@ -2,7 +2,7 @@ import yaml
 from .datalakes.datalake import S3, GCS, AzureBlob
 from .datawarehouses.datawarehouse import BigQuery, SnowFlake, Redshift, StarRocks
 from .databases.database import Postgres, MySQL, Oracle, MsSQL, Sqlite, MariaDB
-from .nosql.nosql import ElasticSearch, MongoDB, DynamoDB
+from .nosql.nosql import ElasticSearch, MongoDB, DynamoDB, Redis
 from .exceptions import ConfigMissingException, UnSupportedDataSourceException
 
 DATA_SOURCES = {
@@ -22,6 +22,7 @@ DATA_SOURCES = {
     'elasticsearch': ElasticSearch, # ElasticSearch
     'mongodb': MongoDB, # MongoDB
     'dynamodb': DynamoDB, # DynamoDB
+    'redis': Redis, # Redis
 
 }
 
