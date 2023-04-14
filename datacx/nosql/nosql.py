@@ -4,6 +4,7 @@ import pandas as pd
 from elasticsearch.helpers import bulk
 from dynamo_pandas import put_df, get_df
 from typing import List, Dict
+from sqlalchemy import create_engine
 
 class ElasticSearch():
     def __init__(self,config):
@@ -112,3 +113,10 @@ class DynamoDB():
     def write_dataframe(self, df, table: str):
         put_df(df,table=table,boto3_kwargs=self._ddb)
         print("Dataframe records updated to the DynamoDB table:", table)
+
+class Redis():
+    def __init__(self, config) -> None:
+        self._redis_engine = create_engine(f"redis:///?Server={config['HOST']}&;Port={config['PORT']}&Password={config['PASSWORD']}")
+
+    def read_as_dataframe(self, query: str, return_type='pandas'):
+        return pd.read_sql(query, self._redis_engine)
