@@ -114,6 +114,7 @@ class DynamoDB():
         put_df(df,table=table,boto3_kwargs=self._ddb)
         print("Dataframe records updated to the DynamoDB table:", table)
 
+# source: https://www.cdata.com/kb/tech/redis-python-pandas.rst
 class Redis():
     def __init__(self, config) -> None:
         self._redis_engine = create_engine(f"redis:///?Server={config['HOST']}&;Port={config['PORT']}&Password={config['PASSWORD']}")
