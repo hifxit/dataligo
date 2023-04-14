@@ -30,7 +30,7 @@ DATA_SOURCE_GROUP = {
     'datalakes': ['s3','gcs','azureblob'],
     'datawarehouses': ['snowflake','redshift','bigquery','starrocks','synapse'],
     'databases': ['postgresql','mssql','mysql','oracle','mariadb','sqlite'],
-    'nosql': ['mongodb','elasticsearch','dynamodb']
+    'nosql': ['mongodb','elasticsearch','dynamodb','redis']
 }
 
 class DataCX():
