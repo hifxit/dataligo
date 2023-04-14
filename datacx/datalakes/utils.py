@@ -32,6 +32,7 @@ def _s3_upload_folder(s3, local_folder_path, bucket, key):
         for filename in files:
             local_path = os.path.join(root, filename)
             relative_path = os.path.relpath(local_path, local_folder_path)
+            relative_path = relative_path.replace("\\", "/")
             s3_path = os.path.join(key, relative_path)
             s3.Object(bucket, s3_path).upload_file(local_path,
                             Config=multipart_config
