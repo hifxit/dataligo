@@ -57,25 +57,26 @@ label: POSITIVE, with score: 0.9967
 >>> mongodb.write_dataframe(df,'reviewdb','review_sentiments')
 ```
 ## Supported Connectors
-  
-|Data Sources| Type | Read | Write |
-|------------|------| ----  | -----|
-|S3|datalake| &#9745;   | &#9745; |
-|GCS|datalake| &#9745;   | &#9745; |
-|Azure Blob Stoarge| datalake| &#9745;   | &#9745; |
-|Snowflake| datawarehouse | &#9745;   | &#9745; |
-|BigQuery| datawarehouse | &#9745;   | &#9745; |
-|StarRocks| datawarehouse | &#9745;   | &#9745; |
-|Redshift| datawarehouse | &#9745;   | &#9745; |
-|PostgreSQL| database | &#9745;   | &#9745; |
-|MySQL| database | &#9745;   | &#9745; |
-|MariaDB| database | &#9745;   | &#9745; |
-|MsSQL| database | &#9745;   | &#9745; |
-|Oracle| database | &#9745;   | &#9745; |
-|SQLite| database | &#9745;   | &#9745; |
-|MongoDB| nosql | &#9745;   | &#9745; |
-|ElasticSearch| nosql | &#9745;   | &#9745; |
-|DynamoDB| nosql | &#9745;   | &#9745; |
+
+        
+ |Data Sources| Type | pandas | polars | dask |
+|------------|------| ----  | -----| ----- |
+|S3|datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[ ] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|GCS|datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[ ] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|Azure Blob Stoarge| datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[ ] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|Snowflake| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[ ] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|BigQuery| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|StarRocks| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|Redshift| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|PostgreSQL| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|MySQL| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|MariaDB| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|MsSQL| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|Oracle| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|SQLite| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|MongoDB| nosql | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[ ] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|ElasticSearch| nosql | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[ ] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|DynamoDB| nosql | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[ ] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
 
 ## Acknowledgement
 
