@@ -233,6 +233,18 @@ class GCS():
                 blob.upload_from_filename(local_path)
         print('Folder uploaded to the bucket: ', f"{bucket}/{blob_path}")
 
+    def download_folder(self, gcs_path: str = None, bucket: str = None, blob_path: str = None, local_path_to_download: str = '.'):
+        if gcs_path:
+            bucket, blob_path = gcs_path.split('/',3)[2:]
+        bucket = self._gcs.get_bucket(bucket)
+        os.makedirs(os.path.join(local_path_to_download,Path(blob_path).stem))
+        for blob in bucket.list_blobs(prefix=blob_path):
+            if '.' in blob.name:
+                filepath = os.path.join(local_path_to_download, blob.name)
+                Path(filepath).parent.mkdir(parents=True, exist_ok=True)
+                blob.download_to_filename(filepath)
+        print('Folder downloaded to the path:',f"{local_path_to_download}/{Path(blob_path).stem}")
+
 class AzureBlob():
     def __init__(self,config):
         """
