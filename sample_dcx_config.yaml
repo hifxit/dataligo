@@ -83,3 +83,8 @@ nosql:
   
   mongodb:
     CONN_STRING: ""
+
+  redis:
+    HOST: ""
+    PORT: ""
+    PASSWORD: ""
