@@ -220,6 +220,18 @@ class GCS():
         blob.download_to_filename(file_path)
         print("File downloaded to the path:", f"{file_path}")
         
+    def upload_folder(self,local_folder_path: str, bucket: str, blob_path: str=''):
+        bucket = self._gcs.get_bucket(bucket)
+        for path, _, files in os.walk(local_folder_path):
+            for name in files:
+                local_path = os.path.join(path, name)
+                relative_path = os.path.relpath(local_path, local_folder_path).replace('\\', '/')
+                dest_blob_path = local_path.replace(local_folder_path, "").replace('\\', '/')
+                if blob_path:
+                    dest_blob_path = os.path.join(blob_path, relative_path)
+                blob = bucket.blob(dest_blob_path)
+                blob.upload_from_filename(local_path)
+        print('Folder uploaded to the bucket: ', f"{bucket}/{blob_path}")
 
 class AzureBlob():
     def __init__(self,config):
@@ -333,7 +345,7 @@ class AzureBlob():
                     blob_client.upload_blob(data)
         print("Folder uploaded to the container", container_name, "with the blob name of", Path(local_folder_path).stem)
 
-    def download_folder(self, blob_path: str, container_name: str, local_path_to_download='.'):
+    def download_folder(self,container_name: str, blob_path: str, local_path_to_download='.'):
         container_client = self._abs.get_container_client(container_name)
         for blob in container_client.list_blob_names():
             if blob.startswith(blob_path):
