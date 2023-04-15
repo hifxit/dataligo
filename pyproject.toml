@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "datacx"
+name = "dataligo"
 version = "0.4.0"
-description = "Data Connectors for all data sources"
+description = "A library to accelerate ML and ETL pipeline by connecting all data sources"
 readme = "README.md"
 authors = [{ name = "Vinish M", email = "vinishuchiha@gmail.com" }]
 license = { file = "LICENSE" }
@@ -14,7 +14,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["connectors", "datalake reader","datawarehouse reader", "dataconnector"]
+keywords = ["connectors", "datalake reader","datawarehouse reader", "dataconnector", "nosql connector"]
 dependencies = [
     "boto3 >= 1.26.93",
     "google-cloud-storage >= 2.7.0",
@@ -40,8 +40,10 @@ requires-python = ">=3.7"
 dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
 
 [project.urls]
-Homepage = "https://github.com/VinishUchiha/datacx"
+Homepage = "https://github.com/VinishUchiha/dataligo"
 
+[tool.setuptools]
+py-modules = ["dataligo"]
 
 [tool.bumpver]
 current_version = "0.4.0"
@@ -55,7 +57,7 @@ push = true
 "pyproject.toml" = [
     'current_version = "{version}"','version = "{version}"',
 ]
-"datacx/__init__.py" = ["{version}"]
+"dataligo/__init__.py" = ["{version}"]
 # "README.md" = [
 #     "{version}",
 #     "{pep440_version}",
