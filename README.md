@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="docs/images/LOGO.png" alt="drawing" width="200"/>
-
-A Data Connector for all the data sources
+# DataLigo
 
 <div align="left">
 
@@ -10,11 +8,11 @@ This library helps to read and write data from most of the data sources. It acce
 
 ## Installation
 ```bash
-pip install -U datacx
+pip install -U dataligo
 ```
 **Install from sources**
 
-Alternatively, you can also clone the latest version from the [repository](https://github.com/VinishUchiha/datacx) and install it directly from the source code:
+Alternatively, you can also clone the latest version from the [repository](https://github.com/VinishUchiha/dataligo) and install it directly from the source code:
 
 ```bash
 pip install -e .
@@ -22,14 +20,14 @@ pip install -e .
 
 ## Quick tour
 ```python
->>> from datacx import DataCX
+>>> from dataligo import Ligo
 >>> from transformers import pipeline
 
->>> dcx = DataCX('./dcx_config.yaml') # Check the sample_dcx_config.yaml for reference
->>> print(dcx.get_supported_data_sources_list())
+>>> ligo = Ligo('./dcx_config.yaml') # Check the sample_dcx_config.yaml for reference
+>>> print(ligo.get_supported_data_sources_list())
 ['s3', 'gcs', 'azureblob', 'bigquery', 'snowflake', 'redshift', 'starrocks', 'postgresql', 'mysql', 'oracle', 'mssql', 'mariadb', 'sqlite', 'elasticsearch', 'mongodb']
 
->>> mongodb = dcx.connect('mongodb')
+>>> mongodb = ligo.connect('mongodb')
 >>> df = mongodb.read_as_dataframe(database='reviewdb',collection='reviews')
 >>> df.head()
         _id	                        Review
@@ -82,12 +80,9 @@ label: POSITIVE, with score: 0.9967
 
 ## Acknowledgement
 
-Some functionalities of DataCX are inspired by the following packages.
+Some functionalities of DataLigo are inspired by the following packages.
 
 - [ConnectorX](https://github.com/sfu-db/connector-x)
   
-  DataCX used Connectorx to read data from most of the RDBMS databases to utilize the performance benefits and inspired the return_type parameter from it
+  DataLigo used Connectorx to read data from most of the RDBMS databases to utilize the performance benefits and inspired the return_type parameter from it
   
-- [GeneratorREX](https://generatorrex.fandom.com/wiki/Generator_Rex_Wiki)
-  
-  DataCX logo inspired by the American animated science fiction television series and created by my graphic designer friend [Belgin David](https://www.linkedin.com/in/belgin-david-4b699a1b8)
