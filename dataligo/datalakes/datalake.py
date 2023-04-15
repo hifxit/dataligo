@@ -135,7 +135,7 @@ class GCS():
         """
         self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
 
-    def read_as_dataframe(self,gcs_path: str = None, bucket: str = None, blob_name: str = None, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self, gcs_path: str = None, bucket: str = None, blob_name: str = None, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
         """Takes gcs path as argument and return dataframe.
 
         Args:
@@ -147,7 +147,10 @@ class GCS():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
-        suffix = Path(gcs_path).suffix
+        if gcs_path:
+            suffix = Path(gcs_path).suffix
+        else:
+            suffix = Path(blob_name).suffix
         if suffix:
             extension = suffix[1:]
         if extension not in _readers:
@@ -177,20 +180,20 @@ class GCS():
             df = reader(stream, **pandas_args)
             return df
 
-    def write_dataframe(self, df, bucket, filename, extension='csv',index=False, sep=','):
+    def write_dataframe(self, df, bucket, blob_name, extension='csv',index=False, sep=','):
         """
-        Takes DataFrame, bucket name, filename as arguments and write the dataframe to GCS.
+        Takes DataFrame, bucket name, blob name as arguments and write the dataframe to GCS.
 
         Args:
             df (DataFrame): Dataframe which need to be uploaded
             bucket (str): GCS Bucket Name
-            filename (str): file name with extension
+            blob_name (str): file name with extension
             extension (str, optional): extension of the files, It take automatically from the filename parameter. Defaults to 'csv'
             index (bool, optional): pandas index parameter. Defaults to False.
             sep (str, optional): pandas sep parameter. Defaults to ','.
         """
-        _gcs_writer(self._gcs,df,bucket=bucket,filename=filename,extension=extension,index=index,sep=sep)
-        print("Dataframe saved to the gcs path:", f"gs://{bucket}/{filename}")
+        _gcs_writer(self._gcs,df,bucket=bucket,filename=blob_name,extension=extension,index=index,sep=sep)
+        print("Dataframe saved to the gcs path:", f"gs://{bucket}/{blob_name}")
     
     def upload_file(self, source_file_path: str, bucket: str, blob_name: str):
         """
