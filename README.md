@@ -23,7 +23,7 @@ pip install -e .
 >>> from dataligo import Ligo
 >>> from transformers import pipeline
 
->>> ligo = Ligo('./dcx_config.yaml') # Check the sample_dcx_config.yaml for reference
+>>> ligo = Ligo('./ligo_config.yaml') # Check the sample_dcx_config.yaml for reference
 >>> print(ligo.get_supported_data_sources_list())
 ['s3', 'gcs', 'azureblob', 'bigquery', 'snowflake', 'redshift', 'starrocks', 'postgresql', 'mysql', 'oracle', 'mssql', 'mariadb', 'sqlite', 'elasticsearch', 'mongodb']
 
