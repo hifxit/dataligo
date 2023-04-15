@@ -28,7 +28,7 @@ class S3():
             aws_secret_access_key=config['AWS_SECRET_ACCESS_KEY'],
         )
 
-    def read_as_dataframe(self,s3_path: str, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self,s3_path: str = None, bucket: str = None, key: str = None, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
         """
         Takes s3 path as arguments and return dataframe.
 
@@ -41,13 +41,17 @@ class S3():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
-        suffix = Path(s3_path).suffix
+        if s3_path:
+            suffix = Path(s3_path).suffix
+        else:
+            suffix = Path(key).suffix
         if suffix:
             extension = suffix[1:]
         if extension not in _readers:
             raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
         reader = _readers[extension]
-        bucket, key =  s3_path.split('/',3)[2:]
+        if s3_path:
+            bucket, key =  s3_path.split('/',3)[2:]
         if key.endswith('*') or key.endswith('/*') or key.endswith('/'):
             pfx_dfs = _multi_file_load(self._s3,bucket=bucket,key=key,reader=reader,extension=extension,pandas_args=pandas_args)
             df = pd.concat(pfx_dfs,ignore_index=True)
@@ -58,20 +62,20 @@ class S3():
             df = reader(stream, **pandas_args)
             return df
         
-    def write_dataframe(self,df,bucket: str, filename: str, extension='csv', index=False, sep=',') -> None:
+    def write_dataframe(self, df, bucket: str, key: str, extension='csv', index=False, sep=',') -> None:
         """
         Takes DataFrame, bucket name, filename as arguments and write the dataframe to S3.
 
         Args:
             df (DataFrame): Dataframe which need to be uploaded
             bucket (str): S3 Bucket Name
-            filename (str): file name with extension
+            key (str): file name with extension
             extension (str, optional): extension of the files, It take automatically from the filename parameter. Defaults to 'csv'
             index (bool, optional): pandas index parameter. Defaults to False.
             sep (str, optional): pandas sep parameter. Defaults to ','.
         """
-        _s3_writer(self._s3, df, bucket, filename, extension, index,sep)
-        print("Dataframe saved to the s3 path:", f"s3://{bucket}/{filename}")
+        _s3_writer(self._s3, df, bucket, key, extension, index,sep)
+        print("Dataframe saved to the s3 path:", f"s3://{bucket}/{key}")
 
     def upload_file(self, source_file_path: str, bucket: str, key: str):
         """
@@ -131,7 +135,7 @@ class GCS():
         """
         self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
 
-    def read_as_dataframe(self,gcs_path: str, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self,gcs_path: str = None, bucket: str = None, blob_name: str = None, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
         """Takes gcs path as argument and return dataframe.
 
         Args:
@@ -149,7 +153,8 @@ class GCS():
         if extension not in _readers:
             raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
         reader = _readers[extension]
-        bucket, blob_name = gcs_path.split('/',3)[2:]
+        if gcs_path:
+            bucket, blob_name = gcs_path.split('/',3)[2:]
         bucket = self._gcs.get_bucket(bucket)
         if blob_name.endswith('/') or blob_name.endswith('/*') or blob_name.endswith('*'):
             blob_name = blob_name.strip('*')
