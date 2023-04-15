@@ -1,4 +1,4 @@
-from .core import DataCX
+from .core import Ligo
 from importlib import resources
 try:
     import tomllib

@@ -33,14 +33,14 @@ DATA_SOURCE_GROUP = {
     'nosql': ['mongodb','elasticsearch','dynamodb','redis']
 }
 
-class DataCX():
+class Ligo():
     def __init__(self,config_path: str=None, name: str = None) -> None:
         """
-        DataCX class create the dcx object which act as the entrypoint for all the data sources.
+        Ligo class create the ligo object which act as the entrypoint for all the data sources.
 
         Args:
             config_path (str, optional): path of the config file (yaml). Defaults to None.
-            name (str, optional): name of the dcx object. Useful if using multiple dcx object. Defaults to None.
+            name (str, optional): name of the ligo object. Useful if using multiple ligo object. Defaults to None.
         """
         self.config_path = config_path
         self.name = name
@@ -69,13 +69,13 @@ class DataCX():
 
     def connect(self,data_source: str):
         """
-        Takes data source name as input and return the dcx data source object
+        Takes data source name as input and return the ligo data source object
 
         Args:
             data_source (str): data source name
 
         Returns:
-            object: dcx data source object
+            object: ligo data source object
         """
         data_source = data_source.lower()
         supported_data_sources = self.get_supported_data_sources_list()
