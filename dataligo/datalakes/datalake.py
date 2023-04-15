@@ -302,7 +302,7 @@ class AzureBlob():
             df = reader(stream, **pandas_args)
             return df
         
-    def write_dataframe(self, df, container_name: str, filename: str, overwrite=True, extension='csv',index=False, sep=','):
+    def write_dataframe(self, df, container_name: str, blob_name: str, overwrite=True, extension='csv',index=False, sep=','):
         """Takes DataFrame, container name, filename as arguments and write the dataframe to Azure Blob Storage.
 
         Args:
@@ -314,8 +314,8 @@ class AzureBlob():
             index (bool, optional): pandas index parameter. Defaults to False.
             sep (str, optional): pandas sep parameter. Defaults to ','.
         """
-        _azure_blob_writer(self._abs, df, container_name,filename,overwrite=overwrite,extension=extension,index=index,sep=sep)
-        print("Dataframe saved to the container", container_name, "with the blob name of", filename)
+        _azure_blob_writer(self._abs, df, container_name,blob_name,overwrite=overwrite,extension=extension,index=index,sep=sep)
+        print("Dataframe saved to the container", container_name, "with the blob name of", blob_name)
 
     # source: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-python
     def upload_file(self,source_file_path: str, container_name: str, blob_name: str = None):
