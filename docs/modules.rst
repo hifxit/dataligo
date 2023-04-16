@@ -1,7 +1,7 @@
-datacx
-======
+dataligo
+========
 
 .. toctree::
    :maxdepth: 4
 
-   datacx
+   dataligo
