@@ -54,6 +54,15 @@ label: POSITIVE, with score: 0.9967
 # Write the results to the MongoDB
 >>> mongodb.write_dataframe(df,'reviewdb','review_sentiments')
 ```
+
+## Example DataLigo Pipeline
+
+## ETL Pipeline
+<p align="center"><img alt="dataligo ETL pipeline diagram" src="https://github.com/VinishUchiha/dataligo/blob/main/docs/images/DataLigo_ETL_pipeline.jpg"/></p>
+
+## ML Pipeline
+<p align="center"><img alt="dataligo ML pipeline diagram" src="https://github.com/VinishUchiha/dataligo/blob/main/docs/images/DataLigo_ML_pipeline.jpg"/></p>
+
 ## Supported Connectors
 
         
