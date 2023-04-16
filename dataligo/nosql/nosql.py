@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 class ElasticSearch():
     def __init__(self,config):
         """
-        ElasticSearch class create the dcx elasticsearch object, through which you can able to read, write, download data from ElasticSearch.
+        ElasticSearch class create the ligo elasticsearch object, through which you can able to read, write, download data from ElasticSearch.
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -64,7 +64,7 @@ class ElasticSearch():
 class MongoDB():
     def __init__(self, config) -> None:
         """
-        MongoDB class create the dcx mongodb object, through which you can able to read, write, download data from MongoDB.
+        MongoDB class create the ligo mongodb object, through which you can able to read, write, download data from MongoDB.
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -101,23 +101,65 @@ class MongoDB():
         self._mdb[database][collection].insert_many(records)
         print("Dataframe saved to the collections:", f"{collection}")
 
-
+# reference: https://github.com/DrGFreeman/dynamo-pandas
 class DynamoDB():
     def __init__(self, config) -> None:
+        """
+        DynamoDB class create the ligo dynamodb object, through which you can able to read, write, download data from DynamoDB.
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         self._ddb = {'aws_access_key_id':config['AWS_ACCESS_KEY_ID'],
                      'aws_secret_access_key':config['AWS_SECRET_ACCESS_KEY']}
 
-    def read_as_dataframe(self, table: str, keys=None,attributes=None, dtype=None,return_type='pandas'):
+    def read_as_dataframe(self, table: str, keys=None, attributes=None, dtype=None,return_type='pandas'):
+        """
+        Takes table name, keys as arguments and return the dataframe
+
+        Args:
+            table (str): table name
+            keys (list, optional): filter query. Defaults to None.
+            attributes (list, optional): fields want to pull from dynamodb. Defaults to None.
+            dtype (dict, optional): parse the return field data type. Defaults to None.
+            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
+
+        Returns:
+            DataFrame: Depends on the return_type parameter.
+        """
         return get_df(table, keys=keys, attributes=attributes, dtype=dtype, boto3_kwargs=self._ddb)
     
     def write_dataframe(self, df, table: str):
+        """
+        Takes DataFrame, table name as arguments and write the dataframe to DynamoDB.
+
+        Args:
+            df (DataFrame): Dataframe which need to be inserted to dynamodb
+            table (str): table name
+        """
         put_df(df,table=table,boto3_kwargs=self._ddb)
         print("Dataframe records updated to the DynamoDB table:", table)
 
 # source: https://www.cdata.com/kb/tech/redis-python-pandas.rst
 class Redis():
     def __init__(self, config) -> None:
+        """
+        Redis class create the ligo redis object, through which you can able to read, write, download data from Redis.
+
+        Args:
+            config (dict): Automatically loaded from the config file (yaml)
+        """
         self._redis_engine = create_engine(f"redis:///?Server={config['HOST']}&;Port={config['PORT']}&Password={config['PASSWORD']}")
 
     def read_as_dataframe(self, query: str, return_type='pandas'):
+        """
+        Takes query as arguments and return the dataframe
+
+        Args:
+            query (str): query
+            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
+
+        Returns:
+            DataFrame: Depends on the return_type parameter.
+        """
         return pd.read_sql(query, self._redis_engine)

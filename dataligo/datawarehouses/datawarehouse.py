@@ -11,7 +11,7 @@ from google.oauth2 import service_account
 class SnowFlake():
     def __init__(self, config):
         """
-        SnowFlake class create the dcx snowflake object, through which you can able to read, write, download data from SnowFlake.
+        SnowFlake class create the ligo snowflake object, through which you can able to read, write, download data from SnowFlake.
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -72,7 +72,7 @@ class SnowFlake():
 class BigQuery():
     def __init__(self,config):
         """
-        BigQuery class create the dcx biqquery object, through which you can able to read, write, download data from Google's BigQuery 
+        BigQuery class create the ligo biqquery object, through which you can able to read, write, download data from Google's BigQuery 
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -123,7 +123,7 @@ class BigQuery():
 class Redshift(DBCX):
     def __init__(self, config) -> None:
         """
-        Redshift class create the dcx redshift object, through which you can able to read, write, download data from Redshift.
+        Redshift class create the ligo redshift object, through which you can able to read, write, download data from Redshift.
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -155,7 +155,7 @@ class Redshift(DBCX):
         
 class StarRocks():
     """
-    StarRocks class create the dcx starrocks object, through which you can able to read, write, download data from StarRocks.
+    StarRocks class create the ligo starrocks object, through which you can able to read, write, download data from StarRocks.
 
     Args:
         config (dict): Automatically loaded from the config file (yaml)

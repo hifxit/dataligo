@@ -79,7 +79,7 @@ class DBCX():
 class Postgres(DBCX):
     def __init__(self,config):
         """
-        Postgres class create postgresql dcx object to load data from postgresql database
+        Postgres class create postgresql ligo object to load data from postgresql database
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -89,7 +89,7 @@ class Postgres(DBCX):
 class MySQL(DBCX):
     def __init__(self,config):
         """
-        MySQL class create mysql dcx object to load data from mysql database
+        MySQL class create mysql ligo object to load data from mysql database
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -99,7 +99,7 @@ class MySQL(DBCX):
 class Oracle(DBCX):
     def __init__(self,config):
         """
-        Oracle class create oracle dcx object to load data from oracle database
+        Oracle class create oracle ligo object to load data from oracle database
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -109,7 +109,7 @@ class Oracle(DBCX):
 class MsSQL(DBCX):
     def __init__(self,config):
         """
-        MsSQL class create mssql dcx object to load data from mssql database
+        MsSQL class create mssql ligo object to load data from mssql database
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -142,7 +142,7 @@ class MsSQL(DBCX):
 class Sqlite():
     def __init__(self,config):
         """
-        Sqlite class create sqlite dcx object to load data from sqlite database
+        Sqlite class create sqlite ligo object to load data from sqlite database
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -190,7 +190,7 @@ class Sqlite():
 class MariaDB(DBCX):
     def __init__(self,config):
         """
-        MariaDB class create mariadb dcx object to load data from mariadb database, through mysql protocol 
+        MariaDB class create mariadb ligo object to load data from mariadb database, through mysql protocol 
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -200,7 +200,7 @@ class MariaDB(DBCX):
 # class MariaDB():
 #     def __init__(self,config):
 #         """
-#         MariaDB class create dcx mariadb object, through which you can able to read, write, download data from MariaDB.
+#         MariaDB class create ligo mariadb object, through which you can able to read, write, download data from MariaDB.
 
 #         Args:
 #             config (dict): Automatically loaded from the config file (yaml)

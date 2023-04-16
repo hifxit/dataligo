@@ -17,7 +17,7 @@ _readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_fe
 class S3():
     def __init__(self,config):
         """
-        S3 class create a dcx s3 object, through which you can able to read, write, upload, download data from AWS S3
+        S3 class create a ligo s3 object, through which you can able to read, write, upload, download data from AWS S3
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -35,6 +35,9 @@ class S3():
         Args:
             s3_path (str): s3 path of the file need to be loaded, for multiple file loading, use s3://bucket/path/filename*
                            to load all files from folder, use s3://bucket/folder/.
+            bucket (str): S3 Bucket Name
+            key (str): file name with extension
+            pandas_args (dict): pandas arguments like encoding, etc
             extension (str, optional): extension of the files, It take automatically from the s3_path parameter. Defaults to 'csv'.
             return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
 
@@ -128,7 +131,7 @@ class S3():
 class GCS():
     def __init__(self,config):
         """
-        GCS class create a dcx gcs object, through which you can able to read, write, upload, download data from Google Cloud Storage.
+        GCS class create a ligo gcs object, through which you can able to read, write, upload, download data from Google Cloud Storage.
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -141,6 +144,9 @@ class GCS():
         Args:
             gcs_path (str): gcs path of the file need to be loaded, for multiple file loading, use gs://bucket/path/filename*
                            to load all files from folder, use gs://bucket/folder/.
+            bucket (str): GCS Bucket Name
+            blob_name (str): file name with extension
+            pandas_args (dict): pandas arguments like encoding, etc
             extension (str, optional): extension of the files, It take automatically from the gcs path parameter. Defaults to 'csv'.
             return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
 
@@ -256,7 +262,7 @@ class GCS():
 class AzureBlob():
     def __init__(self,config):
         """
-        AzureBlob class create a dcx azureblob object, through which you can able to read, write, upload, download data from Azure Blob Storage.
+        AzureBlob class create a ligo azureblob object, through which you can able to read, write, upload, download data from Azure Blob Storage.
 
         Args:
             config (dict): Automatically loaded from the config file (yaml)
@@ -270,6 +276,7 @@ class AzureBlob():
         Args:
             container_name (str): Container Name of the azure storage account 
             blob_name (str): Blob Name which wants to read
+            pandas_args (dict): pandas arguments like encoding, etc
             extension (str, optional): extension of the files, It take automatically from the blob_name parameter. Defaults to 'csv'.
             return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'.
 
