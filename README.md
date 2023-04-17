@@ -25,10 +25,26 @@ pip install -e .
 
 >>> ligo = Ligo('./ligo_config.yaml') # Check the sample_ligo_config.yaml for reference
 >>> print(ligo.get_supported_data_sources_list())
-['s3', 'gcs', 'azureblob', 'bigquery', 'snowflake', 'redshift', 'starrocks', 'postgresql', 'mysql', 'oracle', 'mssql', 'mariadb', 'sqlite', 'elasticsearch', 'mongodb']
+['s3',
+ 'gcs',
+ 'azureblob',
+ 'bigquery',
+ 'snowflake',
+ 'redshift',
+ 'starrocks',
+ 'postgresql',
+ 'mysql',
+ 'oracle',
+ 'mssql',
+ 'mariadb',
+ 'sqlite',
+ 'elasticsearch',
+ 'mongodb',
+ 'dynamodb',
+ 'redis']
 
 >>> mongodb = ligo.connect('mongodb')
->>> df = mongodb.read_as_dataframe(database='reviewdb',collection='reviews')
+>>> df = mongodb.read_as_dataframe(database='reviewdb',collection='reviews',return_type='pandas') # Default return_type is pandas
 >>> df.head()
         _id	                        Review
 0	64272bb06a14f52787e0a09e	good and interesting
