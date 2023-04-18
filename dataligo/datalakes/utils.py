@@ -12,7 +12,17 @@ multipart_config = TransferConfig(multipart_threshold=1024 * 50,
                         multipart_chunksize=1024 * 10,
                         use_threads=True)
 
-
+def readers(return_type):
+    if return_type=='pandas':
+        pd_readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
+            'xls': pd.read_excel, 'ods': pd.read_excel, 'json': pd.read_json,'txt': pd.read_csv}
+        return pd_readers
+    elif return_type=='polars':
+        import polars as pl
+        pl_readers = {'csv': pl.read_csv,'parquet': pl.read_parquet, 'xlsx': pl.read_excel, 
+            'xls': pl.read_excel, 'ods': pl.read_excel, 'json': pl.read_json,'txt': pl.read_csv, 'avro': pl.read_avro}
+        return pl_readers
+    
 def _multi_file_load(s3,bucket,key,reader,extension,pandas_args):
     key = key.strip('/*').strip('*').strip('/')
     bucket = s3.Bucket(bucket)

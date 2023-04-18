@@ -7,12 +7,10 @@ from io import BytesIO
 from pathlib import Path
 from .utils import (_s3_writer, _multi_file_load, _gcs_writer,
                      _azure_blob_writer, _s3_upload_file, 
-                    _s3_download_file, _s3_upload_folder, _s3_download_folder)
+                    _s3_download_file, _s3_upload_folder, _s3_download_folder, readers)
 from ..exceptions import ExtensionNotSupportException
 import os
 
-_readers = {'csv': pd.read_csv,'parquet': pd.read_parquet, 'feather': pd.read_feather, 'xlsx': pd.read_excel, 
-            'xls': pd.read_excel, 'ods': pd.read_excel, 'json': pd.read_json,'txt': pd.read_csv}
 
 class S3():
     def __init__(self,config):
@@ -44,6 +42,7 @@ class S3():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
+        _readers = readers(return_type)
         if s3_path:
             suffix = Path(s3_path).suffix
         else:
@@ -153,6 +152,7 @@ class GCS():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
+        _readers = readers(return_type)
         if gcs_path:
             suffix = Path(gcs_path).suffix
         else:
@@ -283,6 +283,7 @@ class AzureBlob():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
+        _readers = readers(return_type)
         suffix = Path(blob_name).suffix
         if suffix:
             extension = suffix[1:]
