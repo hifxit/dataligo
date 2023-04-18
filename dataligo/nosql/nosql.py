@@ -39,8 +39,13 @@ class ElasticSearch():
             body = query
             )
         records = [i['_source'] for i in response['hits']['hits']]
-        return pd.DataFrame(records)
 
+        if return_type=='pandas':
+            return pd.DataFrame(records)
+        elif return_type=='polars':
+            import polars as pl
+            return pl.from_records(records)
+        
     def write_dataframe(self, df, index: str):
         """
         Takes DataFrame, index name as arguments and write the dataframe to ElasticSearch.
@@ -84,9 +89,15 @@ class MongoDB():
             DataFrame: Depends on the return_type parameter.
         """
         if filter_query is None:
-            return pd.DataFrame(list(self._mdb[database][collection].find()))
+            records = list(self._mdb[database][collection].find())
         else:
-            return pd.DataFrame(list(self._mdb[database][collection].find(filter_query)))
+            records = list(self._mdb[database][collection].find(filter_query))
+
+        if return_type=='pandas':
+            return pd.DataFrame(records)
+        elif return_type=='polars':
+            import polars as pl
+            return pl.from_records(records)
         
     def write_dataframe(self, df, database: str, collection: str):
         """
