@@ -31,6 +31,9 @@ def _snowflake_executer(conn, query, return_type='pandas'):
     cur.execute(query)
     if return_type=='pandas':
         data = cur.fetch_pandas_all()
+    elif return_type=='polars':
+        import polars as pl
+        data = pl.from_arrow(cur.fetch_arrow_all())
     return data
 
 def _df_to_file_writer(df,filename: str) -> None:
