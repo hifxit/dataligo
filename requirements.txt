@@ -5,7 +5,7 @@ pandas
 PyYAML
 connectorx
 sqlalchemy==1.4.46
-snowflake-connector-python[pandas]
+snowflake-connector-python[pandas]==3.0.2
 mysql-connector-python-rf
 elasticsearch
 pymongo

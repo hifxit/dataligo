@@ -22,7 +22,7 @@ dependencies = [
     "pandas >= 1.0.0",
     "PyYAML",
     "connectorx",
-    "snowflake-connector-python[pandas]",
+    "snowflake-connector-python[pandas]==3.0.2",
     "mysql-connector-python-rf",
     "elasticsearch > 8.0.0",
     "sqlalchemy==1.4.46",
