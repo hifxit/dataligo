@@ -131,6 +131,7 @@ def _s3_writer(s3, df, bucket, filename, extension, pandas_args = {}, polars_arg
     s3.Bucket(bucket).put_object(Key=filename, Body=buf.getvalue())
     
 def _gcs_writer(gcs, df, bucket, filename, extension, pandas_args = {}, polars_args = {}):
+    buf = BytesIO()
     suffix = Path(filename).suffix
     if suffix:
         extension = suffix[1:]
@@ -152,16 +153,20 @@ def _gcs_writer(gcs, df, bucket, filename, extension, pandas_args = {}, polars_a
     elif which_dataframe(df)=='polars':
         if extension=='csv':
             bucket.blob(filename).upload_from_string(df.write_csv(**polars_args), 'text/csv')
-        # elif extension=='parquet':
-        #     bucket.blob(filename).upload_from_string(df.write_parquet(**polars_args), 'text/parquet')
+        elif extension=='parquet':
+            df.write_parquet(buf, **polars_args)
+            buf.seek(0)
+            bucket.blob(filename).upload_from_file(buf)
         elif extension=='json':
             bucket.blob(filename).upload_from_string(df.write_json(**polars_args), 'text/json')
-        # elif extension=='avro':
-        #     bucket.blob(filename).upload_from_string(df.write_avro(**polars_args), 'text/avro')
+        elif extension=='avro':
+            df.write_avro(buf, **polars_args)
+            buf.seek(0)
+            bucket.blob(filename).upload_from_file(buf)
         # elif extension in ['feather','arrow']:
         #     df.write_ipc(buf, **polars_args)
         elif extension in ['xlsx','xls']:
-            bucket.blob(filename).upload_from_string(df.write_avro(**polars_args), 'text/avro')
+            bucket.blob(filename).upload_from_string(df.write_excel(**polars_args), 'text/excel')
         else:
             raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
 
