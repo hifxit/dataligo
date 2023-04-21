@@ -86,7 +86,7 @@ label: POSITIVE, with score: 0.9967
 |------------|------| ----  | -----| ----- |
 |S3|datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
 |GCS|datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
-|Azure Blob Stoarge| datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|Azure Blob Storage| datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
 |Snowflake| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
 |BigQuery| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
 |StarRocks| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
