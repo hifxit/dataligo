@@ -64,7 +64,7 @@ class S3():
             df = reader(stream, **pandas_args)
             return df
         
-    def write_dataframe(self, df, bucket: str, key: str, extension='csv', index=False, sep=',') -> None:
+    def write_dataframe(self, df, bucket: str, key: str, extension='csv', pandas_args = {}, polars_args = {}) -> None:
         """
         Takes DataFrame, bucket name, filename as arguments and write the dataframe to S3.
 
@@ -76,7 +76,7 @@ class S3():
             index (bool, optional): pandas index parameter. Defaults to False.
             sep (str, optional): pandas sep parameter. Defaults to ','.
         """
-        _s3_writer(self._s3, df, bucket, key, extension, index,sep)
+        _s3_writer(self._s3, df, bucket, key, extension, pandas_args = pandas_args, polars_args = polars_args)
         print("Dataframe saved to the s3 path:", f"s3://{bucket}/{key}")
 
     def upload_file(self, source_file_path: str, bucket: str, key: str):
@@ -186,7 +186,7 @@ class GCS():
             df = reader(stream, **pandas_args)
             return df
 
-    def write_dataframe(self, df, bucket, blob_name, extension='csv',index=False, sep=','):
+    def write_dataframe(self, df, bucket, blob_name, extension='csv', pandas_args = {}, polars_args = {}):
         """
         Takes DataFrame, bucket name, blob name as arguments and write the dataframe to GCS.
 
@@ -198,7 +198,7 @@ class GCS():
             index (bool, optional): pandas index parameter. Defaults to False.
             sep (str, optional): pandas sep parameter. Defaults to ','.
         """
-        _gcs_writer(self._gcs,df,bucket=bucket,filename=blob_name,extension=extension,index=index,sep=sep)
+        _gcs_writer(self._gcs,df,bucket=bucket,filename=blob_name,extension=extension, pandas_args = pandas_args, polars_args = polars_args)
         print("Dataframe saved to the gcs path:", f"gs://{bucket}/{blob_name}")
     
     def upload_file(self, source_file_path: str, bucket: str, blob_name: str):
