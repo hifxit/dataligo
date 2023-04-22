@@ -2,8 +2,7 @@ from elasticsearch import Elasticsearch
 from pymongo import MongoClient
 import pandas as pd
 from elasticsearch.helpers import bulk
-from dynamo_pandas import put_df, get_df
-from dynamo_pandas.transactions import put_items
+from dynamo_pandas.transactions import put_items, get_all_items, get_items
 from typing import List, Dict
 from sqlalchemy import create_engine
 from ..utils import which_dataframe
@@ -151,7 +150,25 @@ class DynamoDB():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
-        return get_df(table, keys=keys, attributes=attributes, dtype=dtype, boto3_kwargs=self._ddb)
+        if keys is not None:
+            items = get_items(
+                keys=keys, table=table, attributes=attributes, boto3_kwargs=self._ddb
+            )
+        else:
+            items = get_all_items(
+                table=table, attributes=attributes, boto3_kwargs=self._ddb
+            )
+        if isinstance(items, dict):
+            items = [items]
+
+        if return_type=='pandas':
+            df = pd.DataFrame(items)
+            if dtype is not None:
+                df = df.astype(dtype)
+            return df
+        elif return_type=='polars':
+            import polars as pl
+            return pl.from_records(items)
     
     def write_dataframe(self, df, table: str):
         """
@@ -162,12 +179,12 @@ class DynamoDB():
             table (str): table name
         """
         if which_dataframe(df)=='pandas':
-            put_df(df,table=table,boto3_kwargs=self._ddb)
+            records = df.to_dict('records')
         elif which_dataframe(df)=='polars':
             records = df.to_dicts()
-            put_items(items=records, table=table, boto3_kwargs=self._ddb)
         else:
             raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
+        put_items(items=records, table=table, boto3_kwargs=self._ddb)
         print("Dataframe records updated to the DynamoDB table:", table)
 
 # source: https://www.cdata.com/kb/tech/redis-python-pandas.rst
