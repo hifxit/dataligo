@@ -1,10 +1,11 @@
 import connectorx as cx
 import pandas as pd
 #import mariadb
-from ..exceptions import ParamsMissingException
+from ..exceptions import ParamsMissingException, UnSupportedDataFrameException
 from ..datawarehouses.utils import _df_to_file_writer
 import os
 from sqlalchemy import create_engine
+from ..utils import which_dataframe
 
 class DBCX():
     def __init__(self,config,db_type):
@@ -66,15 +67,20 @@ class DBCX():
             index (bool, optional): Write DataFrame index as a column. Defaults to False.
         """
         if self._dbname_in_config:
-            engine = create_engine(self._conn_str)
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-            print("Dataframe saved to the table:", f"{table_name}")
+            engine = create_engine(self._conn_str)    
         elif database:
             engine = create_engine(f"{self._conn_str}/{database}")
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-            print("Dataframe saved to the table:", f"{table_name}")
         else:
             raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
+
+        if which_dataframe(df)=='pandas':
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        elif which_dataframe(df)=='polars':
+            df.to_pandas().to_sql(table_name,engine,if_exists=if_exists,index=index)
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
+        print("Dataframe saved to the table:", f"{table_name}")
+
 
 class Postgres(DBCX):
     def __init__(self,config):
@@ -129,15 +135,19 @@ class MsSQL(DBCX):
         """
         conn_str = self.conn_str.replace('mssql','mssql+pymssql')
         if self._dbname_in_config:
-            engine = create_engine(conn_str)
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-            print("Dataframe saved to the mssql table:", f"{table_name}")
+            engine = create_engine(conn_str)    
         elif database:
             engine = create_engine(f"{conn_str}/{database}")
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-            print("Dataframe saved to the mssql table:", f"{table_name}")
         else:
             raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
+        
+        if which_dataframe(df)=='pandas':
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        elif which_dataframe(df)=='polars':
+            df.to_pandas().to_sql(table_name,engine,if_exists=if_exists,index=index)
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
+        print("Dataframe saved to the table:", f"{table_name}")
 
 class Sqlite():
     def __init__(self,config):
@@ -184,8 +194,13 @@ class Sqlite():
             abs_db_path = os.path.abspath(db_path)
         conn_str = 'sqlite:///'+abs_db_path
         engine = create_engine(conn_str)
-        df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-        print("Dataframe saved to the sqlite table:", f"{table_name}")
+        if which_dataframe(df)=='pandas':
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        elif which_dataframe(df)=='polars':
+            df.to_pandas().to_sql(table_name,engine,if_exists=if_exists,index=index)
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
+        print("Dataframe saved to the table:", f"{table_name}")
 
 class MariaDB(DBCX):
     def __init__(self,config):
