@@ -161,6 +161,11 @@ class GCS():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
+        if return_type=='polars':
+            import polars as pl
+            reader_args = polars_args
+        elif return_type=='pandas':
+            reader_args = pandas_args
         _readers = readers(return_type)
         if gcs_path:
             suffix = Path(gcs_path).suffix
@@ -185,14 +190,14 @@ class GCS():
                     blob = bucket.blob(blob)
                     data = blob.download_as_string()
                     stream = BytesIO(data)
-                    df = reader(stream, **pandas_args)
+                    df = reader(stream, **reader_args)
                     dfs.append(df)
             return pd.concat(dfs,ignore_index=True)
         else:
             blob = bucket.blob(blob_name)
             data = blob.download_as_string()
             stream = BytesIO(data)
-            df = reader(stream, **pandas_args)
+            df = reader(stream, **reader_args)
             return df
 
     def write_dataframe(self, df, bucket, blob_name, extension='csv', pandas_args = {}, polars_args = {}):
