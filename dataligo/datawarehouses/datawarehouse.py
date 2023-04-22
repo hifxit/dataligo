@@ -213,7 +213,11 @@ class StarRocks():
             raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
         cur.execute(query)
         columns = [desc[0] for desc in cur.description]
-        return pd.DataFrame(cur.fetchall(),columns=columns)
+        if return_type=='pandas':
+            return pd.DataFrame(cur.fetchall(), columns=columns)
+        elif return_type=='polars'
+            return pl.from_records(cur.fetchall(), schema=columns)
+        
     
     def download_as_file(self, query: str, filename: str, database: str = None) -> None:
         """
@@ -244,11 +248,15 @@ class StarRocks():
         if self._dbname_in_config:
             conn_str = f"{conn_str}/{config['DATABASE']}"
             engine = create_engine(conn_str)
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-            print("Dataframe saved to the starrocks table:", f"{table_name}")
         elif database:
             engine = create_engine(f"{conn_str}/{database}")
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-            print("Dataframe saved to the starrocks table:", f"{table_name}")
         else:
             raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
+
+        if which_dataframe(df)=='pandas':
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        elif which_dataframe(df)=='polars':
+            df.to_pandas().to_sql(table_name,engine,if_exists=if_exists,index=index)
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
+        print("Dataframe saved to the table:", f"{table_name}")
