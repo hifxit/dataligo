@@ -66,7 +66,12 @@ class SnowFlake():
             protocol (str, optional): protocol used. Defaults to 'https'.
         """
         sf_conn = _snowflake_connector(self._config, database=database, schema=schema, protocol=protocol)
-        success, nchunks, nrows, _ = write_pandas(sf_conn, df, table_name)
+        if which_dataframe(df)=='pandas':
+            success, nchunks, nrows, _ = write_pandas(sf_conn, df, table_name)
+        elif which_dataframe(df)=='polars':
+            success, nchunks, nrows, _ = write_pandas(sf_conn, df.to_pandas(), table_name)
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
         print("Dataframe saved to the snowflake table:", f"{table_name}")
         
 
