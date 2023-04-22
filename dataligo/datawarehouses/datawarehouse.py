@@ -1,12 +1,13 @@
 import connectorx as cx
 from .utils import _df_to_file_writer, _snowflake_connector, _snowflake_executer
 from ..databases.database import DBCX
-from ..exceptions import ParamsMissingException
+from ..exceptions import ParamsMissingException, UnSupportedDataFrameException
 import mysql.connector
 import pandas as pd
 from sqlalchemy import create_engine
 from snowflake.connector.pandas_tools import write_pandas
 from google.oauth2 import service_account
+from ..utils import which_dataframe
 
 class SnowFlake():
     def __init__(self, config):
@@ -116,7 +117,12 @@ class BigQuery():
             if_exists (str, optional): operation to do if the table exists. Defaults to 'append'.
         """
         credentials = service_account.Credentials.from_service_account_file(self._config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
-        df.to_gbq(destination_table=table_name, project_id=project_id, if_exists=if_exists, credentials=credentials)
+        if which_dataframe(df)=='pandas': 
+            df.to_gbq(destination_table=table_name, project_id=project_id, if_exists=if_exists, credentials=credentials)
+        elif which_dataframe(df)=='polars':
+            df.to_pandas().to_gbq(destination_table=table_name, project_id=project_id, if_exists=if_exists, credentials=credentials)
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
         print("Dataframe saved to the table:", f"{table_name}")
 
     
