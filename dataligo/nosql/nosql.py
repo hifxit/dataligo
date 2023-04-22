@@ -5,6 +5,8 @@ from elasticsearch.helpers import bulk
 from dynamo_pandas import put_df, get_df
 from typing import List, Dict
 from sqlalchemy import create_engine
+from ..utils import which_dataframe
+from ..exceptions import UnSupportedDataFrameException
 
 class ElasticSearch():
     def __init__(self,config):
@@ -53,7 +55,12 @@ class ElasticSearch():
             df (DataFrame): Dataframe which need to be inserted to es
             index (str): index name
         """
-        records = df.to_dict('records')
+        if which_dataframe(df)=='pandas':
+            records = df.to_dict('records')
+        elif which_dataframe(df)=='polars':
+            records = df.to_dicts()
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
         actions = [
             {
                 "_index": index,
@@ -108,7 +115,12 @@ class MongoDB():
             database (str): database name
             collection (str): collection name
         """
-        records = df.to_dict('records')
+        if which_dataframe(df)=='pandas':
+            records = df.to_dict('records')
+        elif which_dataframe(df)=='polars':
+            records = df.to_dicts()
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
         self._mdb[database][collection].insert_many(records)
         print("Dataframe saved to the collections:", f"{collection}")
 
