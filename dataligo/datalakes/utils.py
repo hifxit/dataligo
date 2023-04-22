@@ -23,7 +23,15 @@ def readers(return_type):
         pl_readers = {'csv': pl.read_csv,'parquet': pl.read_parquet, 'xlsx': pl.read_excel, 
             'xls': pl.read_excel, 'ods': pl.read_excel, 'json': pl.read_json,'txt': pl.read_csv, 'avro': pl.read_avro}
         return pl_readers
-    
+
+def df_concat(dfs,return_type):
+    if return_type=='pandas':     
+        df = pd.concat(dfs,ignore_index=True)
+        return df
+    elif return_type=='polars':
+        df = pl.concat(dfs)
+        return df
+
 def _multi_file_load(s3,bucket,key,reader,extension,reader_args):
     key = key.strip('/*').strip('*').strip('/')
     bucket = s3.Bucket(bucket)
@@ -177,18 +185,34 @@ def _azure_blob_writer(abs, df, container_name,blob_name, extension, overwrite=T
     container_client = abs.get_container_client(container_name)
     blob_client = container_client.get_blob_client(blob_name)
     buf = BytesIO()
-    if extension=='csv':
-        df.to_csv(buf, **pandas_args)
-    elif extension=='json':
-        df.to_json(buf, **pandas_args)
-    elif extension=='parquet':
-        df.to_parquet(buf, **pandas_args)
-    elif extension=='feather':
-        df.to_feather(buf, **pandas_args)
-    elif extension in ['xlsx','xls']:
-        df.to_excel(buf, **pandas_args)
-    else:
-        raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
+    if which_dataframe(df) == 'pandas':
+        if extension=='csv':
+            df.to_csv(buf, **pandas_args)
+        elif extension=='json':
+            df.to_json(buf, **pandas_args)
+        elif extension=='parquet':
+            df.to_parquet(buf, **pandas_args)
+        elif extension=='feather':
+            df.to_feather(buf, **pandas_args)
+        elif extension in ['xlsx','xls']:
+            df.to_excel(buf, **pandas_args)
+        else:
+            raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
+    elif which_dataframe(df)=='polars':
+        if extension=='csv':
+            df.write_csv(buf, **polars_args)
+        elif extension=='parquet':
+            df.write_parquet(buf, **polars_args)
+        elif extension=='avro':
+            df.write_avro(buf, **polars_args)
+        elif extension=='json':
+            df.write_json(buf, **polars_args)
+        elif extension in ['feather','arrow']:
+            df.write_ipc(buf, **polars_args)
+        elif extension in ['xlsx','xls']:
+            df.write_excel(buf, **polars_args)
+        else:
+            raise ExtensionNotSupportException(f'Unsupported Extension: {extension}')
     buf.seek(0)
     blob_client.upload_blob(buf.getvalue(), overwrite=overwrite)
 
