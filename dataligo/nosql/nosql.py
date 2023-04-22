@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import pandas as pd
 from elasticsearch.helpers import bulk
 from dynamo_pandas import put_df, get_df
+from dynamo_pandas.transactions import put_items
 from typing import List, Dict
 from sqlalchemy import create_engine
 from ..utils import which_dataframe
@@ -160,7 +161,13 @@ class DynamoDB():
             df (DataFrame): Dataframe which need to be inserted to dynamodb
             table (str): table name
         """
-        put_df(df,table=table,boto3_kwargs=self._ddb)
+        if which_dataframe(df)=='pandas':
+            put_df(df,table=table,boto3_kwargs=self._ddb)
+        elif which_dataframe(df)=='polars':
+            records = df.to_dicts()
+            put_items(items=records, table=table, boto3_kwargs=self._ddb)
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
         print("Dataframe records updated to the DynamoDB table:", table)
 
 # source: https://www.cdata.com/kb/tech/redis-python-pandas.rst
