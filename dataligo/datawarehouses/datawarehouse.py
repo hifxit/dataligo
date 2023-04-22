@@ -144,14 +144,18 @@ class Redshift(DBCX):
         conn_str = self._conn_str.replace('redshift','postgresql')
         if self._dbname_in_config:
             engine = create_engine(conn_str)
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-            print("Dataframe saved to the table:", f"{table_name}")
         elif database:
             engine = create_engine(f"{conn_str}/{database}")
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-            print("Dataframe saved to the table:", f"{table_name}")
         else:
             raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
+
+        if which_dataframe(df)=='pandas':
+            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
+        elif which_dataframe(df)=='polars':
+            df.to_pandas().to_sql(table_name,engine,if_exists=if_exists,index=index)
+        else:
+            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
+        print("Dataframe saved to the table:", f"{table_name}")
         
 class StarRocks():
     """
