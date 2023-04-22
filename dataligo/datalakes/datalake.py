@@ -26,7 +26,7 @@ class S3():
             aws_secret_access_key=config['AWS_SECRET_ACCESS_KEY'],
         )
 
-    def read_as_dataframe(self,s3_path: str = None, bucket: str = None, key: str = None, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self,s3_path: str = None, bucket: str = None, key: str = None, pandas_args: Dict = {}, polars_args: Dict = {}, extension='csv', return_type='pandas'):
         """
         Takes s3 path as arguments and return dataframe.
 
@@ -42,6 +42,11 @@ class S3():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
+        if return_type=='polars':
+            import polars as pl
+            reader_args = polars_args
+        elif return_type=='pandas':
+            reader_args = pandas_args
         _readers = readers(return_type)
         if s3_path:
             suffix = Path(s3_path).suffix
@@ -55,13 +60,17 @@ class S3():
         if s3_path:
             bucket, key =  s3_path.split('/',3)[2:]
         if key.endswith('*') or key.endswith('/*') or key.endswith('/'):
-            pfx_dfs = _multi_file_load(self._s3,bucket=bucket,key=key,reader=reader,extension=extension,pandas_args=pandas_args)
-            df = pd.concat(pfx_dfs,ignore_index=True)
-            return df
+            pfx_dfs = _multi_file_load(self._s3,bucket=bucket,key=key,reader=reader,extension=extension,reader_args=reader_args)
+            if return_type=='pandas':     
+                df = pd.concat(pfx_dfs,ignore_index=True)
+                return df
+            elif return_type=='polars':
+                df = pl.concat(pfx_dfs)
+                return df
         else:
             obj = self._s3.Object(bucket_name=bucket, key=key)
             stream = BytesIO(obj.get()['Body'].read())
-            df = reader(stream, **pandas_args)
+            df = reader(stream, **reader_args)
             return df
         
     def write_dataframe(self, df, bucket: str, key: str, extension='csv', pandas_args = {}, polars_args = {}) -> None:
@@ -137,7 +146,7 @@ class GCS():
         """
         self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
 
-    def read_as_dataframe(self, gcs_path: str = None, bucket: str = None, blob_name: str = None, pandas_args: Dict = {}, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self, gcs_path: str = None, bucket: str = None, blob_name: str = None, pandas_args: Dict = {}, polars_args: Dict = {}, extension='csv', return_type='pandas'):
         """Takes gcs path as argument and return dataframe.
 
         Args:

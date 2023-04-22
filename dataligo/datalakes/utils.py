@@ -24,7 +24,7 @@ def readers(return_type):
             'xls': pl.read_excel, 'ods': pl.read_excel, 'json': pl.read_json,'txt': pl.read_csv, 'avro': pl.read_avro}
         return pl_readers
     
-def _multi_file_load(s3,bucket,key,reader,extension,pandas_args):
+def _multi_file_load(s3,bucket,key,reader,extension,reader_args):
     key = key.strip('/*').strip('*').strip('/')
     bucket = s3.Bucket(bucket)
     pfx_objs = bucket.objects.filter(Prefix=key)
@@ -33,7 +33,7 @@ def _multi_file_load(s3,bucket,key,reader,extension,pandas_args):
         if obj.key.endswith('/'):
             continue
         body = BytesIO(obj.get()['Body'].read())
-        df = reader(body, **pandas_args)
+        df = reader(body, **reader_args)
         pfx_dfs.append(df)
     return pfx_dfs
 
