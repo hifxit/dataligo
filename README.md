@@ -86,11 +86,11 @@ label: POSITIVE, with score: 0.9967
 |------------|------| ----  | -----| ----- |
 |S3|datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
 |GCS|datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
-|Azure Blob Storage| datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
-|Snowflake| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
-|BigQuery| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
-|StarRocks| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
-|Redshift| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[ ] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|Azure Blob Storage| datalake| <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|Snowflake| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|BigQuery| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|StarRocks| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
+|Redshift| datawarehouse | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
 |PostgreSQL| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
 |MySQL| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
 |MariaDB| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
