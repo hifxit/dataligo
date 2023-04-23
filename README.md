@@ -99,7 +99,7 @@ label: POSITIVE, with score: 0.9967
 |SQLite| database | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[x] read</li><li>[ ] write</li></ul> |
 |MongoDB| nosql | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
 |ElasticSearch| nosql | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
-|DynamoDB| nosql | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[ ] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
+|DynamoDB| nosql | <ul><li>[x] read</li><li>[x] write</li></ul>   | <ul><li>[x] read</li><li>[x] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
 |Redis| nosql | <ul><li>[x] read</li><li>[ ] write</li></ul>   | <ul><li>[ ] read</li><li>[ ] write</li></ul> | <ul><li>[ ] read</li><li>[ ] write</li></ul> |
 
 
