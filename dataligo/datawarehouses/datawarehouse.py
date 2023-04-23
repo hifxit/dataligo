@@ -215,7 +215,7 @@ class StarRocks():
         columns = [desc[0] for desc in cur.description]
         if return_type=='pandas':
             return pd.DataFrame(cur.fetchall(), columns=columns)
-        elif return_type=='polars'
+        elif return_type=='polars':
             return pl.from_records(cur.fetchall(), schema=columns)
         
     

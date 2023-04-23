@@ -26,7 +26,8 @@ class S3():
             aws_secret_access_key=config['AWS_SECRET_ACCESS_KEY'],
         )
 
-    def read_as_dataframe(self,s3_path: str = None, bucket: str = None, key: str = None, pandas_args: Dict = {}, polars_args: Dict = {}, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self,s3_path: str = None, bucket: str = None, key: str = None, pandas_args: Dict = {}, 
+                            polars_args: Dict = {}, extension='csv', return_type='pandas'):
         """
         Takes s3 path as arguments and return dataframe.
 
@@ -141,7 +142,8 @@ class GCS():
         """
         self._gcs = storage.Client.from_service_account_json(json_credentials_path=config['GOOGLE_APPLICATION_CREDENTIALS_PATH'])
 
-    def read_as_dataframe(self, gcs_path: str = None, bucket: str = None, blob_name: str = None, pandas_args: Dict = {}, polars_args: Dict = {}, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self, gcs_path: str = None, bucket: str = None, blob_name: str = None, pandas_args: Dict = {}, 
+                            polars_args: Dict = {}, extension='csv', return_type='pandas'):
         """Takes gcs path as argument and return dataframe.
 
         Args:
@@ -187,7 +189,7 @@ class GCS():
                     stream = BytesIO(data)
                     df = reader(stream, **reader_args)
                     dfs.append(df)
-            return df_concat(dfs,return_tye)
+            return df_concat(dfs,return_type)
         else:
             blob = bucket.blob(blob_name)
             data = blob.download_as_string()
@@ -279,7 +281,8 @@ class AzureBlob():
         self._abs = BlobServiceClient(account_url=f"https://{config['ACCOUNT_NAME']}.blob.core.windows.net",
                                         credential=config['ACCOUNT_KEY'])
         
-    def read_as_dataframe(self, container_name: str,blob_name: str, pandas_args: Dict = {}, polars_args: Dict = {}, extension='csv', return_type='pandas'):
+    def read_as_dataframe(self, container_name: str,blob_name: str, pandas_args: Dict = {}, 
+                            polars_args: Dict = {}, extension='csv', return_type='pandas'):
         """Takes Azure Storage account container name and blob name and return datafarme.
 
         Args:
