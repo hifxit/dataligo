@@ -111,3 +111,7 @@ Some functionalities of DataLigo are inspired by the following packages.
   
   DataLigo used Connectorx to read data from most of the RDBMS databases to utilize the performance benefits and inspired the return_type parameter from it
   
+- [dynamo-pandas](https://github.com/DrGFreeman/dynamo-pandas)
+
+  DataLigo used dynamo-pandas to read and write data from DynamoDB
+  
