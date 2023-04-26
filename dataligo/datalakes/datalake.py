@@ -62,7 +62,7 @@ class S3():
             bucket, key =  s3_path.split('/',3)[2:]
         if key.endswith('*') or key.endswith('/*') or key.endswith('/'):
             dfs = _multi_file_load(self._s3,bucket=bucket,key=key,reader=reader,extension=extension,reader_args=reader_args)
-            return df_concat(dfs,return_tye)
+            return df_concat(dfs,return_type)
         else:
             obj = self._s3.Object(bucket_name=bucket, key=key)
             stream = BytesIO(obj.get()['Body'].read())
@@ -320,7 +320,7 @@ class AzureBlob():
                     reader = _readers[extension]
                     df = reader(stream, **reader_args)
                     dfs.append(df)
-            return df_concat(dfs,return_tye)
+            return df_concat(dfs,return_type)
         else:
             blob_client = container_client.get_blob_client(blob_name)
             stream = BytesIO(blob_client.download_blob().readall())
