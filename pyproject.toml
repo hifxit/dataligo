@@ -43,8 +43,8 @@ dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
 [project.urls]
 Homepage = "https://github.com/VinishUchiha/dataligo"
 
-[tool.setuptools]
-py-modules = ["dataligo"]
+# [tool.setuptools]
+# py-modules = ["dataligo"]
 
 [tool.bumpver]
 current_version = "0.7.0"
