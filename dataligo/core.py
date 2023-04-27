@@ -44,6 +44,7 @@ class Ligo():
         """
         self.config_path = config_path
         self.name = name
+        self._config = None
         if config_path is not None:
             self.set_config(self.config_path)
 
@@ -57,6 +58,17 @@ class Ligo():
         self.config_path = config_path
         with open(self.config_path,'r') as config_file:
             self._config = yaml.safe_load(config_file)
+
+    def update_config(self, data_source: str, credential: dict):
+        ds_group = self._config_mapper(data_source)
+        if self._config is not None:
+            if ds_group in self._config:
+                self._config[ds_group][data_source] = credential
+            else:
+                self._config[ds_group] = {}
+                self._config[ds_group][data_source] = credential
+        else:
+            self._config = {ds_group: {data_source: credential}}
 
     def get_supported_data_sources_list(self) -> None:
         """
@@ -81,7 +93,7 @@ class Ligo():
         supported_data_sources = self.get_supported_data_sources_list()
         if data_source not in supported_data_sources:
             raise UnSupportedDataSourceException("Mentioned Data Source not supported. Supported Data Sources are",supported_data_sources)
-        if self.config_path:
+        if self._config is not None:
             ds_group = self._config_mapper(data_source)
             ds_config = self._config[ds_group][data_source]
             return DATA_SOURCES[data_source](ds_config)
