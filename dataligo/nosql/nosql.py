@@ -2,11 +2,10 @@ from elasticsearch import Elasticsearch
 from pymongo import MongoClient
 import pandas as pd
 from elasticsearch.helpers import bulk
-from dynamo_pandas.transactions import put_items, get_all_items, get_items
 from typing import List, Dict
 from sqlalchemy import create_engine
 from ..utils import which_dataframe
-from ..exceptions import UnSupportedDataFrameException
+from ..exceptions import UnSupportedDataFrameException, ModuleNotFoundException
 
 class ElasticSearch():
     def __init__(self,config):
@@ -133,8 +132,12 @@ class DynamoDB():
         Args:
             config (dict): Automatically loaded from the config file (yaml)
         """
-        self._ddb = {'aws_access_key_id':config['AWS_ACCESS_KEY_ID'],
-                     'aws_secret_access_key':config['AWS_SECRET_ACCESS_KEY']}
+        try:
+            import dynamo_pandas
+            self._ddb = {'aws_access_key_id':config['AWS_ACCESS_KEY_ID'],
+                            'aws_secret_access_key':config['AWS_SECRET_ACCESS_KEY']}
+        except:
+            raise ModuleNotFoundException('dynamo_pandas not found. try `pip install dynamo-pandas`')
 
     def read_as_dataframe(self, table: str, keys=None, attributes=None, dtype=None,return_type='pandas'):
         """
@@ -150,6 +153,7 @@ class DynamoDB():
         Returns:
             DataFrame: Depends on the return_type parameter.
         """
+        from dynamo_pandas.transactions import get_all_items, get_items
         if keys is not None:
             items = get_items(
                 keys=keys, table=table, attributes=attributes, boto3_kwargs=self._ddb
@@ -178,6 +182,7 @@ class DynamoDB():
             df (DataFrame): Dataframe which need to be inserted to dynamodb
             table (str): table name
         """
+        from dynamo_pandas.transactions import put_items
         if which_dataframe(df)=='pandas':
             records = df.to_dict('records')
         elif which_dataframe(df)=='polars':
