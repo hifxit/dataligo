@@ -28,10 +28,6 @@ dependencies = [
     "sqlalchemy==1.4.46",
     "pymongo",
     "dynamo_pandas",
-    "fastparquet",
-    "openpyxl",
-    "xlrd",
-    "xlwt",
     'tomli; python_version < "3.11"',
 ]
 requires-python = ">=3.7"
