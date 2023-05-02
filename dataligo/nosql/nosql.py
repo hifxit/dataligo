@@ -1,7 +1,4 @@
-from elasticsearch import Elasticsearch
-from pymongo import MongoClient
 import pandas as pd
-from elasticsearch.helpers import bulk
 from typing import List, Dict
 from sqlalchemy import create_engine
 from ..utils import which_dataframe
@@ -85,7 +82,11 @@ class MongoDB():
         Args:
             config (dict): Automatically loaded from the config file (yaml)
         """
-        self._mdb = MongoClient(config['CONN_STRING'])
+        try:
+            from pymongo import MongoClient
+            self._mdb = MongoClient(config['CONN_STRING'])
+        except ImportError:
+            raise ModuleNotFoundException('pymongo not found. try `pip install pymongo`')
 
     def read_as_dataframe(self,database: str,collection: str,filter_query: dict=None,return_type='pandas'):
         """
