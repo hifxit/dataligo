@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dataligo"
-version = "0.7.2"
+version = "0.7.3"
 description = "A library to accelerate ML and ETL pipeline by connecting all data sources"
 readme = "README.md"
 authors = [{ name = "Vinish M", email = "vinishuchiha@gmail.com" }]
@@ -24,26 +24,24 @@ dependencies = [
     "connectorx",
     "snowflake-connector-python[pandas]==3.0.2",
     "mysql-connector-python-rf",
-    "elasticsearch > 8.0.0",
     "sqlalchemy==1.4.46",
-    "pymongo",
-    "dynamo_pandas",
     'tomli; python_version < "3.11"',
 ]
 requires-python = ">=3.7"
 
 [project.optional-dependencies]
 polars = ["polars"]
+dynamodb = ["dynamo-pandas"]
+elasticsearch = ["elasticsearch > 8.0.0"]
+mongodb = ["pymongo"]
+all = ["polars","elasticsearch > 8.0.0","pymongo","dynamo-pandas"]
 dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
 
 [project.urls]
 Homepage = "https://github.com/VinishUchiha/dataligo"
 
-# [tool.setuptools]
-# py-modules = ["dataligo"]
-
 [tool.bumpver]
-current_version = "0.7.2"
+current_version = "0.7.3"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
