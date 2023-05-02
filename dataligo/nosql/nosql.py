@@ -15,14 +15,18 @@ class ElasticSearch():
         Args:
             config (dict): Automatically loaded from the config file (yaml)
         """
-        if 'USERNAME' in config and 'PASSWORD' in config:
-            if config['USERNAME'] and config['PASSWORD']:
-                self._es = Elasticsearch([config['HOST']],basic_auth=(config['USERNAME'],config['PASSWORD']))
-        elif 'API_KEY' in config:
-            if config['API_KEY']:
-                self._es = Elasticsearch([config['HOST']],api_key=config['API_KEY'])
-        else:
-            self._es = Elasticsearch([config['HOST']])
+        try:
+            from elasticsearch import Elasticsearch
+            if 'USERNAME' in config and 'PASSWORD' in config:
+                if config['USERNAME'] and config['PASSWORD']:
+                    self._es = Elasticsearch([config['HOST']],basic_auth=(config['USERNAME'],config['PASSWORD']))
+            elif 'API_KEY' in config:
+                if config['API_KEY']:
+                    self._es = Elasticsearch([config['HOST']],api_key=config['API_KEY'])
+            else:
+                self._es = Elasticsearch([config['HOST']])
+        except ImportError:
+            raise ModuleNotFoundException('elasticsearch not found. try `pip install elasticsearch`')
     
     def read_as_dataframe(self,query: str,index: str,return_type='pandas'):
         """
@@ -54,6 +58,7 @@ class ElasticSearch():
             df (DataFrame): Dataframe which need to be inserted to es
             index (str): index name
         """
+        from elasticsearch.helpers import bulk
         if which_dataframe(df)=='pandas':
             records = df.to_dict('records')
         elif which_dataframe(df)=='polars':
@@ -136,7 +141,7 @@ class DynamoDB():
             import dynamo_pandas
             self._ddb = {'aws_access_key_id':config['AWS_ACCESS_KEY_ID'],
                             'aws_secret_access_key':config['AWS_SECRET_ACCESS_KEY']}
-        except:
+        except ImportError:
             raise ModuleNotFoundException('dynamo_pandas not found. try `pip install dynamo-pandas`')
 
     def read_as_dataframe(self, table: str, keys=None, attributes=None, dtype=None,return_type='pandas'):
