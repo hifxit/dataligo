@@ -2,7 +2,6 @@ import connectorx as cx
 from .utils import _df_to_file_writer, _snowflake_connector, _snowflake_executer
 from ..databases.database import DBCX
 from ..exceptions import ParamsMissingException, UnSupportedDataFrameException
-import mysql.connector
 import pandas as pd
 from sqlalchemy import create_engine
 from snowflake.connector.pandas_tools import write_pandas
