@@ -23,7 +23,6 @@ dependencies = [
     "PyYAML",
     "connectorx",
     "snowflake-connector-python[pandas]==3.0.2",
-    "mysql-connector-python-rf",
     "sqlalchemy==1.4.46",
     'tomli; python_version < "3.11"',
 ]
