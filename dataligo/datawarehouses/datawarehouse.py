@@ -168,7 +168,7 @@ class Redshift(DBCX):
             raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
         print("Dataframe saved to the table:", f"{table_name}")
         
-class StarRocks():
+class StarRocks(DBCX):
     """
     StarRocks class create the ligo starrocks object, through which you can able to read, write, download data from StarRocks.
 
@@ -176,87 +176,4 @@ class StarRocks():
         config (dict): Automatically loaded from the config file (yaml)
     """
     def __init__(self, config) -> None:
-        self._config = config
-        self._sr_conn = mysql.connector.connect(host = config['HOST'],port = config['PORT'], user = config['USERNAME'], password=config['PASSWORD']) 
-        if 'DATABASE' in config:
-            if config['DATABASE']:
-                self._dbname_in_config = True
-                self._sr_conn = mysql.connector.connect(
-                                        host = config['HOST'],
-                                        port = config['PORT'],
-                                        user = config['USERNAME'], 
-                                        password=config['PASSWORD'],
-                                        database=config['DATABASE']) 
-                
-    def read_as_dataframe(self, query: str, database: str = None, return_type: str ='pandas'):
-        """
-        Takes query as argument and return a dataframe
-
-        Args:
-            query (str): select query
-            database (str, optional): database name, if None, it take it from config. Defaults to None.
-            return_type (str, optional): which dataframe you want to return (pandas, polars, dask etc). Defaults to 'pandas'. Defaults to 'pandas'.
-
-        Returns:
-            DataFrame: Depends on the return_type parameter.
-        """
-        if self._dbname_in_config:
-            cur = self._sr_conn.cursor()
-        elif database:
-            self._sr_conn = mysql.connector.connect(
-                                        host = self._config['HOST'],
-                                        port = self._config['PORT'],
-                                        user = self._config['USERNAME'], 
-                                        password=self._config['PASSWORD'],
-                                        database=self._config['DATABASE'])
-        else:
-            raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
-        cur.execute(query)
-        columns = [desc[0] for desc in cur.description]
-        if return_type=='pandas':
-            return pd.DataFrame(cur.fetchall(), columns=columns)
-        elif return_type=='polars':
-            return pl.from_records(cur.fetchall(), schema=columns)
-        
-    
-    def download_as_file(self, query: str, filename: str, database: str = None) -> None:
-        """
-        Takes query, filename as arguments and download the data as file
-
-        Args:
-            query (str): select query
-            filename (str): filename to save the file
-            database (str, optional): database name, if None, it take it from config. Defaults to None.
-        """
-        df = self.read_as_dataframe(query=query,database=database)
-        _df_to_file_writer(df,filename=filename)
-        print('File saved to the path:', filename)
-
-    def write_dataframe(self, df,  table_name: str, database: str = None, if_exists: str = 'append',index=False):
-        """
-        Takes dataframe, table name as arguments and write the dataframe to StarRocks
-
-        Args:
-            df (DataFrame): Dataframe which need to be loaded
-            table_name (str): table name
-            database (str, optional): database name. Defaults to None.
-            if_exists (str, optional): operation to do if the table exists. Defaults to 'append'.
-            index (bool, optional): Write DataFrame index as a column. Defaults to False.
-        """
-        config = self._config
-        conn_str = f"mysql://{config['USERNAME']}:{config['PASSWORD']}@{config['HOST']}:{config['PORT']}"
-        if self._dbname_in_config:
-            conn_str = f"{conn_str}/{config['DATABASE']}"
-            engine = create_engine(conn_str)
-        elif database:
-            engine = create_engine(f"{conn_str}/{database}")
-        else:
-            raise ParamsMissingException(f"database parameter missing. Either add it in config file or pass it as an argument.")
-
-        if which_dataframe(df)=='pandas':
-            df.to_sql(table_name,engine,if_exists=if_exists,index=index)
-        elif which_dataframe(df)=='polars':
-            df.to_pandas().to_sql(table_name,engine,if_exists=if_exists,index=index)
-        else:
-            raise UnSupportedDataFrameException(f"Unsupported Dataframe: {which_dataframe(df)}")
-        print("Dataframe saved to the table:", f"{table_name}")
+        super().__init__(config,'mysql')
